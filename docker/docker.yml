@@ -1,0 +1,111 @@
+# This workflow builds, deploys and pushes docker images to any container registry
+
+name: docker-ci
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # - name: Grant execute permission for mvnw #grants maven permission to execute and package your code
+      #   run: chmod +x mvnw
+      
+      # # Runs a single command using the runners shell
+      # - name: Package app with Maven
+      #   run: |
+      #     ./mvnw clean install
+      #     mv target/container-ci-demo-0.0.1-SNAPSHOT.jar target/container-ci-demo.jar
+      
+      # - name: Cache Maven packages
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: ~/.m2
+      #     key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: ${{ runner.os }}-m2
+      # - name: Run tests with Maven
+      #   run: mvn -B test --file pom.xml
+      
+      #Creates a and pushes a new tag for the current pipeline to be used for semantic versioning and tagging the docker image
+      - name: Bump version and push tag
+        id: tag_version
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true
+      
+      # #Use this action to get the meta-data of the github repo/pipeline job which will be used to tag for semantic release and docker image
+      # - name: Docker meta
+      #   id: meta
+      #   uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      #   #uses: docker/metadata-action@v1
+      #   with:
+      #     images: ghcr.io/${{ github.repository_owner }}/container-ci-demo #enter your image name here, usually the repo name
+      #     tags: |
+      #       type=raw,value=latest,enable=${{ endsWith(GitHub.ref, 'main') }}
+      #       type=ref,event=tag
+      #     flavor: |
+      #       latest=true
+            
+      - name: Login to GitHub Container Registry
+        #if: GitHub.event_name != 'pull_request' #only trigger this action on pull request against the main branch
+        #uses: docker/login-action@v1
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      #Build, Tag and Push the docker image to Github Container Registry  
+      -
+        name: Build, Tag and Push Docker Image
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: ${{ github.repository }}/container-ci-demo
+          tags: latest, ${{ steps.tag_version.outputs.new_tag }}
+      
+      #Creates a Semantic Release with commit hash
+      - name: Create a GitHub Semantic release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }} 
+      
+      #Sends a slack notification to slack build channel
+      - name: Report Status
+        if: always()
+        uses: ravsamhq/notify-slack-action@v1
+        with:
+          status: ${{ job.status }}
+          notify_when: 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} 
+      -
+        name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: Job for Release ${{ steps.tag_version.outputs.new_tag }} completed successfully.
