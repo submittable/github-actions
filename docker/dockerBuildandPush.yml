@@ -32,7 +32,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCHES: main
-          WITH_V: false
+          WITH_V: true
 
       # Attempt to make the REF string valid docker tag syntax
       - name: Extract source branch/pr name
@@ -53,11 +53,11 @@ jobs:
             type=raw,value=${{ steps.tag_version.outputs.new_tag }}
             type=raw,value=${{ steps.extract_ref_tag.outputs.branch }}
             type=raw,value=${{ GitHub.sha }}
-
       # Build, Tag and Push the docker image to Github Container Registry
       - name: Build, Tag and Push Docker Image
         uses: docker/build-push-action@v2.7.0
         with:
+          context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -67,7 +67,7 @@ jobs:
         if: endsWith(GitHub.ref, 'main') && success()
         uses: actions/create-release@v1.1.4
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUBUSER }} #create a github token and secrets
         with:
           tag_name: ${{ steps.tag_version.outputs.new_tag }}
           release_name: ${{ steps.tag_version.outputs.new_tag }}
