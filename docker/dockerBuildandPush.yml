@@ -1,0 +1,92 @@
+# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+name: Demo Image Build and Publish
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Reads the latest tag on the repo and increments its minor verions
+      # Increment style can be changed by including a #major, #minor, or #patch in a commit message
+      - name: Bump version and push tag
+        id: tag_version
+        uses: anothrNick/github-tag-action@1.35.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCHES: main
+          WITH_V: true
+
+      # Attempt to make the REF string valid docker tag syntax
+      - name: Extract source branch/pr name
+        shell: bash
+        run: |
+          TEMP=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          echo "##[set-output name=branch;]$(echo ${TEMP///-})"
+        id: extract_ref_tag
+
+      # Collate the image name, tags, and labels for push command
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3.5.0
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value=latest,enable=${{ endsWith(GitHub.ref, 'main') }}
+            type=raw,value=${{ steps.tag_version.outputs.new_tag }}
+            type=raw,value=${{ steps.extract_ref_tag.outputs.branch }}
+            type=raw,value=${{ GitHub.sha }}
+      # Build, Tag and Push the docker image to Github Container Registry
+      - name: Build, Tag and Push Docker Image
+        uses: docker/build-push-action@v2.7.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      # Creates a Github release with the new semantic version
+      - name: Create a GitHub Semantic release
+        if: endsWith(GitHub.ref, 'main') && success()
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUBUSER }} #create a github token and secrets
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
+
+      # Sends a slack notification to slack build channel on failure
+      - name: Report Status
+        if: endsWith(GitHub.ref, 'main') && failure()
+        uses: ravsamhq/notify-slack-action@v1
+        with:
+          status: ${{ job.status }}
+          notify_when: 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+      # Sends a slack notification to slack build channel
+      - name: Slack Notification
+        if: endsWith(GitHub.ref, 'main') && success()
+        uses: rtCamp/action-slack-notify@v2.2.0
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: Job for Release ${{ steps.tag_version.outputs.new_tag }} completed successfully.
