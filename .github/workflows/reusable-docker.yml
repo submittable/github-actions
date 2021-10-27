@@ -7,6 +7,7 @@ on:
         required: true
         type: string
       context:
+      default: '.'
         required: false
         type: string
     secrets:
