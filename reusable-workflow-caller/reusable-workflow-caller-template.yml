@@ -11,25 +11,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
-        run: npm ci
-      - run: npm run build --if-present
-      - run: npm test
-   
   #this is the syntax for the reusable workflow for dockerizing any application.
   #Notice that we passed the same secret name like we did when we created the reusable workflow
   #Also make sure to reference the version. Here we used the 'main' branch as the version.      
