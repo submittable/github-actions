@@ -19,6 +19,7 @@ jobs:
       with:
       #this is a variable configured within the called workflow. in this case the image_name will be the repo name
         image_name: ${{ github.repository }}
+        context: CHANGEME
       secrets:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
