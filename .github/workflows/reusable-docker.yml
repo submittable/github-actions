@@ -7,7 +7,8 @@ on:
         required: true
         type: string
       context:
-      default: '.'
+        description: 'adds the context path to the dockerfile'
+        default: '.'
         required: false
         type: string
     secrets:
