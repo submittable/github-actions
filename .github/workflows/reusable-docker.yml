@@ -55,7 +55,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3.5.0
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ghcr.io/${{ inputs.image_name }}
           tags: |
             type=raw,value=latest,enable=${{ endsWith(GitHub.ref, 'main') }}
             type=raw,value=${{ steps.tag_version.outputs.new_tag }}
@@ -65,9 +65,7 @@ jobs:
       - name: Build, Tag and Push Docker Image
         uses: docker/build-push-action@v2.7.0
         with:
-          context: .
-          #context: ./
-          #file: ./Dockerfile
+          context: ${{ inputs.context }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
