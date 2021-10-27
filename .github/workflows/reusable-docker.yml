@@ -6,8 +6,9 @@ on:
       image_name:
         required: true
         type: string
-      #tag:
-        #type: string
+      context:
+        required: true
+        type: string
     secrets:
       GITHUB_TOKEN:
         required: true
