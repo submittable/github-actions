@@ -38,6 +38,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCHES: main
           WITH_V: false
+          #INITIAL_VERSION: #Set initial version before bump. Default 0.0.0
 
       # Attempt to make the REF string valid docker tag syntax
       - name: Extract source branch/pr name
