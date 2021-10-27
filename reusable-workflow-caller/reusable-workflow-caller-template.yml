@@ -1,4 +1,4 @@
-#This template is used to call a reusable workflow. It runs the CI for the npm and then calls another workflow to dockerize the app
+#This template is used to call a reusable workflow. It runs the CI for any repo and then calls another workflow to dockerize the app
 #You'll need to create a regular workflow and then create a new job name that calls the reusable workflow (ex. docker)
 name: Reusable Workflow User
 
