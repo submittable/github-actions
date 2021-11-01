@@ -27,7 +27,7 @@ jobs:
       - name: Private actions checkout
         uses: daspn/private-actions-checkout@v2
         with:
-          actions_list: '["submittable/github-tag-action@1.36.0", "submittable/notify-slack-action@v1", "submittable/action-slack-notify@v2.2.0"]'
+          actions_list: '["submittable/github-tag-action@main", "submittable/notify-slack-action@v1", "submittable/action-slack-notify@v2.2.0"]'
           checkout_base_path: ./.github/actions
           app_id: ${{ secrets.PRIVATE_ACTIONS_CHECKOUT_APP_ID }}
           app_private_key: ${{ secrets.PRIVATE_ACTIONS_CHECKOUT_APP_PRIVATE_KEY }}
