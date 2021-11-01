@@ -36,10 +36,6 @@ jobs:
         run: |
           ls -lR ./.github/actions
 
-    # the custom private action will be available on the job's workspace
-      - name: 'Using custom private action 1'
-        uses: ./.github/actions/my-private-action-1
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1.10.0
         with:
