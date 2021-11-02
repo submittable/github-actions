@@ -19,13 +19,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       
       - name: Private actions checkout
-        uses: submittable/private-actions-checkout@v2
+        uses: daspn/private-actions-checkout@v2
         with:
           actions_list: '["submittable/github-tag-action@1.36.0", "submittable/notify-slack-action@v1", "submittable/action-slack-notify@v2.2.0"]'
           checkout_base_path: ./.github/actions
