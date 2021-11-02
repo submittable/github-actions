@@ -31,6 +31,8 @@ jobs:
           checkout_base_path: ./.github/actions
           app_id: ${{ secrets.PRIVATE_ACTIONS_CHECKOUT_APP_ID }}
           app_private_key: ${{ secrets.PRIVATE_ACTIONS_CHECKOUT_APP_PRIVATE_KEY }}
+          return_app_token: true
+          configure_git: true
 
       - name: Validation
         run: |
