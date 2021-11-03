@@ -23,20 +23,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
-      - name: Private actions checkout
-        uses: submittable/private-actions-checkout@v2
-        with:
-          actions_list: '["submittable/github-tag-action@1.36.0", "submittable/notify-slack-action@v1", "submittable/action-slack-notify@v2.2.0"]'
-          checkout_base_path: ./.github/actions
-          app_id: ${{ secrets.PRIVATE_ACTIONS_CHECKOUT_APP_ID }}
-          app_private_key: ${{ secrets.PRIVATE_ACTIONS_CHECKOUT_APP_PRIVATE_KEY }}
-          #return_app_token: true
-          #configure_git: true
-
-      - name: Validation
-        run: |
-          ls -lR ./.github/actions
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1.10.0
@@ -49,12 +35,12 @@ jobs:
       # Increment style can be changed by including a #major, #minor, or #patch in a commit message
       - name: Bump version and push tag
         id: tag_version
-        uses: ./.github/actions/github-tag-action
+        uses: submittable/github-tag-action@1.36.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCHES: main
           WITH_V: false
-          #INITIAL_VERSION: #Sets initial version before bump. Default 0.0.0
+          #INITIAL_VERSION: #Set initial version before bump. Default 0.0.0
 
       # Attempt to make the REF string valid docker tag syntax
       - name: Extract source branch/pr name
@@ -98,7 +84,7 @@ jobs:
       # Sends a slack notification to slack build channel on failure
       - name: Slack Notification - Failure
         if: endsWith(GitHub.ref, 'main') && failure()
-        uses: ./.github/actions/notify-slack-action
+        uses: submittable/notify-slack-action@v1
         with:
           footer: 'Linked Repo <{repo_url}|{repo}>'
           status: ${{ job.status }}
@@ -109,7 +95,7 @@ jobs:
       # Sends a slack notification to slack build channel
       - name: Slack Notification - Success
         if: endsWith(GitHub.ref, 'main') && success()
-        uses: ./.github/actions/action-slack-notify
+        uses: submittable/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: Job for Release ${{ steps.tag_version.outputs.new_tag }} completed successfully.
