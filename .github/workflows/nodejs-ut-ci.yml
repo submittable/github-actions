@@ -78,12 +78,12 @@ jobs:
           status: ${{ job.status }}
           notify_when: 'failure'
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_NODE }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
       # Sends a slack notification to slack build channel
       - name: Slack Notification - On Success
         if: endsWith(GitHub.ref, 'main') && success()
         uses: submittable/action-slack-notify@v2.2.0
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_NODE }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: Unit tests passed successfully!
