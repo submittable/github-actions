@@ -42,11 +42,11 @@ jobs:
   
   #     - name: Bump version and push tag
   #       id: tag_version
-  #       uses: anothrNick/github-tag-action@1.35.0
+  #       uses: submittable/github-tag-action@1.35.0
   #       env:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   #         RELEASE_BRANCHES: main
-          # WITH_V: true
+          # WITH_V: false
 
       # #Attempt to make the REF string valid docker tag syntax
       # - name: Extract source branch/pr name
