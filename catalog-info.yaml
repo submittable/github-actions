@@ -4,7 +4,9 @@ metadata:
   name: github-actions
   annotations:
     github.com/project-slug: submittable/github-actions
+  tags:
+    - github
 spec:
   type: other
-  lifecycle: unknown
+  lifecycle: development
   owner: infrastructure
