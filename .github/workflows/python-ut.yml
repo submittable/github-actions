@@ -27,9 +27,8 @@ jobs:
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          flake8 . --count --select=E9,F63,F7,F82 --exit-zero --max-complexity=10 --max-line-length=127 --show-source --statistics
       - name: Test with pytest
         run: python -m unittest discover tests
 
@@ -70,7 +69,7 @@ jobs:
       # Sends a slack notification to slack build channel on failure
       - name: Report Status
         if: endsWith(GitHub.ref, 'main') && failure()
-        uses: ravsamhq/notify-slack-action@v1
+        uses: submittable/notify-slack-action@v1
         with:
           status: ${{ job.status }}
           notify_when: 'failure'
@@ -80,7 +79,7 @@ jobs:
       # Sends a slack notification to slack build channel
       - name: Slack Notification
         if: endsWith(GitHub.ref, 'main') && success()
-        uses: rtCamp/action-slack-notify@v2.2.0
+        uses: submittable/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK}}
           SLACK_MESSAGE: Unit tests passed successfully.
