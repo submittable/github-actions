@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: github-actions
+  annotations:
+    github.com/project-slug: submittable/github-actions
+spec:
+  type: other
+  lifecycle: unknown
+  owner: infra
