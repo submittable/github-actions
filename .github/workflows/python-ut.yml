@@ -1,0 +1,85 @@
+name: Resuable Python Unit Test Workflow
+
+on:
+  workflow_call:
+    secrets:
+      GITHUB_TOKEN:
+        required: true
+      SLACK_WEBHOOK:
+        required: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+        #choose which python version [3.6, 3.7, 3.8, 3.9]. betdefault is 3.6
+          python-version: 3.6
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --select=E9,F63,F7,F82 --exit-zero --max-complexity=10 --max-line-length=127 --show-source --statistics
+      - name: Test with pytest
+        run: python -m unittest discover tests
+
+      #When Sonar server is available, use this step to run Static Code Analysis
+  #     - name: Run Sonar Scan
+  #       uses: sonarsource/sonarqube-scan-action@master
+  #     env:
+  #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  
+  #     - name: Bump version and push tag
+  #       id: tag_version
+  #       uses: submittable/github-tag-action@1.35.0
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         RELEASE_BRANCHES: main
+          # WITH_V: false
+
+      # #Attempt to make the REF string valid docker tag syntax
+      # - name: Extract source branch/pr name
+      #   shell: bash
+      #   run: |
+      #     TEMP=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+      #     echo "##[set-output name=branch;]$(echo ${TEMP///-})"
+      #   id: extract_ref_tag
+
+      # # Creates a Github release with the new semantic version
+      # - name: Create a GitHub Semantic release
+      #   if: endsWith(GitHub.ref, 'main') && success()
+      #   uses: actions/create-release@v1.1.4
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUBUSER }} #create a github token and secrets
+      #   with:
+      #     tag_name: ${{ steps.tag_version.outputs.new_tag }}
+      #     release_name: ${{ steps.tag_version.outputs.new_tag }}
+      #     body: ${{ steps.tag_version.outputs.changelog }}
+      
+      # Sends a slack notification to slack build channel on failure
+      - name: Report Status
+        if: endsWith(GitHub.ref, 'main') && failure()
+        uses: submittable/notify-slack-action@v1
+        with:
+          status: ${{ job.status }}
+          notify_when: 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+
+      # Sends a slack notification to slack build channel
+      - name: Slack Notification
+        if: endsWith(GitHub.ref, 'main') && success()
+        uses: submittable/action-slack-notify@v2.2.0
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK}}
+          SLACK_MESSAGE: Unit tests passed successfully.
