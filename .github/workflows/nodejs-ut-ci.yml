@@ -97,3 +97,4 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: Unit tests passed successfully!
+          SLACK_FOOTER: Powered By Submittable GitHub Actions Library
