@@ -17,6 +17,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
       #This action will set up and boot a builder that can be used in the workflow.
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
