@@ -7,6 +7,10 @@ on:
         required: true
       SLACK_WEBHOOK:
         required: true
+      SONAR_HOST_URL:
+        required: true
+      SONAR_TOKEN:
+        required: true
 
 jobs:
   build:
@@ -33,11 +37,11 @@ jobs:
         run: python -m unittest discover tests
 
       #When Sonar server is available, use this step to run Static Code Analysis
-  #     - name: Run Sonar Scan
-  #       uses: sonarsource/sonarqube-scan-action@master
-  #     env:
-  #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: Run Sonar Scan
+        uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
   
   #     - name: Bump version and push tag
   #       id: tag_version
