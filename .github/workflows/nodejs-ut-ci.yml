@@ -11,7 +11,7 @@ on:
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     strategy:
 
@@ -47,11 +47,11 @@ jobs:
           retention-days: 5
     
     #Enable only when Sonar server is available. It will run Static Code Analysis
-  #     - name: Run Sonar Scan
-  #       uses: sonarsource/sonarqube-scan-action@master
-  #     env:
-  #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: Run Sonar Scan
+        uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
   #     - name: Bump version and push tag
   #       id: tag_version
