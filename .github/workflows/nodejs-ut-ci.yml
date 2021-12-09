@@ -2,6 +2,10 @@ name: Resuable Nodejs Unit Test Workflow
 
 on:
   workflow_call:
+    inputs:
+      repo_name:
+        required: true
+        type: string
     secrets:
       GITHUB_TOKEN:
         required: true
@@ -59,7 +63,7 @@ jobs:
             -Dsonar.python.coverage.reportPaths=coverage.xml
             -Dsonar.tests=tests/
             -Dsonar.verbose=true
-            -Dsonar.projectKey=develop
+            -Dsonar.projectKey=${{ inputs.repo_name }}
         env:
          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
