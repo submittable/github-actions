@@ -1,4 +1,4 @@
-name: Resuable Nodejs Unit Test Workflow
+name: Resuable Nodejs Unit Test and Sonar Scanning Workflow
 
 on:
   workflow_call:
