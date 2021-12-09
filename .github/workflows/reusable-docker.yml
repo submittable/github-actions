@@ -30,6 +30,8 @@ jobs:
       #This action will set up and boot a builder that can be used in the workflow.
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+        with:
+          context: tls-environment
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1.10.0
