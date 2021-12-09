@@ -107,5 +107,5 @@ jobs:
         uses: submittable/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: Job for Release ${{ steps.tag_version.outputs.new_tag }} completed successfully.
+          SLACK_MESSAGE: Docker job for Release ${{ steps.tag_version.outputs.new_tag }} completed successfully.
           SLACK_FOOTER: Powered By Submittable GitHub Actions Library
