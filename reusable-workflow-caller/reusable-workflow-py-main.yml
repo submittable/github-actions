@@ -15,7 +15,7 @@ jobs:
   test:
       uses: submittable/github-actions/.github/workflows/python-ut.yml@main
       secrets:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.token }}
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
   
   #Dockerize app      
@@ -27,7 +27,7 @@ jobs:
         image_name: ${{ github.repository }}
         #context: CHANGEME
       secrets:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.token }}
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
   #docker-backend:
       #uses: submittable/github-actions/.github/workflows/reusable-docker.yml@main
@@ -36,5 +36,5 @@ jobs:
         #image_name: ${{ github.repository }}
         #context: CHANGEME
       #secrets:
-        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #GITHUB_TOKEN: ${{ secrets.token }}
         #SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
