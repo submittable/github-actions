@@ -15,7 +15,7 @@ jobs:
   test:
       uses: submittable/github-actions/.github/workflows/nodejs-ut-ci.yml@main
       secrets:
-        GITHUB_TOKEN: ${{ secrets.token }}
+#         GITHUB_TOKEN: ${{ secrets.token }}
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
   
   #Dockerize app      
