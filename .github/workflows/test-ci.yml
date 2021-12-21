@@ -32,13 +32,15 @@ jobs:
         with:
           files: "package.json"
 
-      - name: File exists
+      - name: Set Node Version - If present
         if: steps.check_files.outputs.files_exists == 'true'
         # Only runs if all of the files exists
         uses: actions/setup-node@v2
         with:
         #Choose which node version [10.x, 12.x, 14.x, 15.x]. Default is 15.x
           node-version: 15.x
+      
+      - name: Set Python Version - If present
         if: steps.check_files.outputs.files_exists == 'false'
         uses: actions/setup-python@v2
         with:
