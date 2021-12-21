@@ -14,10 +14,13 @@ jobs:
   
   #Run tests & Sonar Scan
   test:
-      uses: submittable/github-actions/.github/workflows/test.yml@main
+      uses: submittable/github-actions/.github/workflows/test-ci.yml@main
+      with:
+        repo_name: submittable-test-python-repo #change to the name of the project
       secrets:
-#         GITHUB_TOKEN: ${{ secrets.token }}
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   
   #Dockerize app      
   docker-frontend:
@@ -28,7 +31,6 @@ jobs:
         image_name: ${{ github.repository }}
         #context: CHANGEME
       secrets:
-#         GITHUB_TOKEN: ${{ secrets.token }}
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
   #docker-backend:
       #uses: submittable/github-actions/.github/workflows/reusable-docker.yml@main
@@ -37,5 +39,4 @@ jobs:
         #image_name: ${{ github.repository }}
         #context: CHANGEME
       #secrets:
-        #GITHUB_TOKEN: ${{ secrets.token }}
         #SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
