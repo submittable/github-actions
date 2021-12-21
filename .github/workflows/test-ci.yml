@@ -45,27 +45,33 @@ jobs:
         #choose which python version [3.6, 3.7, 3.8, 3.9]. betdefault is 3.6
           python-version: 3.6
       
-      - name: Install Dependencies
+      - name: Install Nodejs Dependencies - If Present
         if: steps.check_files.outputs.files_exists == 'true'
         run: npm ci
+      
+      - name: Install Python Dependencies - If Present
         if: steps.check_files.outputs.files_exists == 'false'
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Build
+      - name: Build Nodejs - If Present
         if: steps.check_files.outputs.files_exists == 'true'
         run: npm run build --if-present
+      
+      - name: Build Python - If Present
         if: steps.check_files.outputs.files_exists == 'false'
         run: |
           # stop the build if there are Python syntax errors or undefined names
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --select=E9,F63,F7,F82 --exit-zero --max-complexity=10 --max-line-length=127 --show-source --statistics
 
-      - name: Run tests
+      - name: Run Nodejs tests - If Present
         if: steps.check_files.outputs.files_exists == 'true'
         run: npm test
+      
+      - name: Run Python tests - If Present
         if: steps.check_files.outputs.files_exists == 'false'
         run: python -m unittest discover tests
 
@@ -85,7 +91,7 @@ jobs:
       #     retention-days: 5
     
     #Enable only when Sonar server is available. It will run Static Code Analysis
-      - name: Run Sonar Scan
+      - name: Run Sonar Scan - Nodejs
         if: steps.check_files.outputs.files_exists == 'true'
         uses: sonarsource/sonarqube-scan-action@master
         with:
@@ -98,6 +104,8 @@ jobs:
         env:
          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Run Sonar Scan - Python
         if: steps.check_files.outputs.files_exists == 'false'
         uses: sonarsource/sonarqube-scan-action@master
         with:
