@@ -8,7 +8,7 @@ This repository contains github reusable workflows for Nodejs and Python project
 
 2. Create file ```workflow.yml``` and copy code from ```reusable-workflow-caller/reusable-workflow.yml```
 
-3. Change the ```repo_name``` in line 19 of ```workflow.yml``` file to the project name. This will consumed by Sonar scanner
+3. Change the ```repo_name``` in line 19 of ```workflow.yml``` file to the project name. This will be consumed by Sonar scanner
 
 4. Save and Create PR
 
