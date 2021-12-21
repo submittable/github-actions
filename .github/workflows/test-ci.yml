@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
 
       - name: Check file existence
         id: check_files
@@ -31,7 +31,7 @@ jobs:
         with:
           files: "package.json"
 
-      - name: Set Node Version - If present
+      - name: Set Node Version
         if: steps.check_files.outputs.files_exists == 'true'
         # Only runs if all of the files exists
         uses: actions/setup-node@v2
@@ -39,57 +39,59 @@ jobs:
         #Choose which node version [10.x, 12.x, 14.x, 15.x]. Default is 15.x
           node-version: 15.x
       
-      - name: Set Python Version - If present
+      - name: Set Python Version
         if: steps.check_files.outputs.files_exists == 'false'
         uses: actions/setup-python@v2
         with:
         #choose which python version [3.6, 3.7, 3.8, 3.9]. betdefault is 3.6
           python-version: 3.6
       
-      - name: Install Nodejs Dependencies - If Present
+      - name: Install Nodejs Dependencies
         if: steps.check_files.outputs.files_exists == 'true'
         run: npm ci
       
-      - name: Install Python Dependencies - If Present
+      - name: Install Python Dependencies
         if: steps.check_files.outputs.files_exists == 'false'
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Build Nodejs - If Present
+      - name: Build Nodejs
         if: steps.check_files.outputs.files_exists == 'true'
         run: npm run build --if-present
       
-      - name: Build Python - If Present
+      - name: Build Python
         if: steps.check_files.outputs.files_exists == 'false'
         run: |
           # stop the build if there are Python syntax errors or undefined names
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --select=E9,F63,F7,F82 --exit-zero --max-complexity=10 --max-line-length=127 --show-source --statistics
 
-      - name: Run Nodejs tests - If Present
+      - name: Run Nodejs tests
         if: steps.check_files.outputs.files_exists == 'true'
         run: npm test
       
-      - name: Run Python tests - If Present
+      - name: Run Python tests
         if: steps.check_files.outputs.files_exists == 'false'
         run: python -m unittest discover tests
 
-      # - name: Archive production artifacts
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: dist-without-markdown
-      #     path: |
-      #       dist
-      #       !dist/**/*.md
+      - name: Archive production artifacts
+        if: steps.check_files.outputs.files_exists == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist-without-markdown
+          path: |
+            dist
+            !dist/**/*.md
 
-      # - name: Archive code coverage results
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: code-coverage-report
-      #     path: output/test/code-coverage.html
-      #     retention-days: 5
+      - name: Archive code coverage results
+        if: steps.check_files.outputs.files_exists == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: output/test/code-coverage.html
+          retention-days: 5
     
     #Enable only when Sonar server is available. It will run Static Code Analysis
       - name: Run Sonar Scan - Nodejs
