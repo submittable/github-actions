@@ -7,8 +7,6 @@ on:
         required: true
         type: string
     secrets:
-      # GITHUB_TOKEN:
-      #   required: true
       SLACK_WEBHOOK:
         required: true
       SONAR_HOST_URL:
@@ -24,6 +22,7 @@ jobs:
     # strategy:
 
     steps:
+      - name: Checkout
       - uses: actions/checkout@v2
 
       - name: Check file existence
@@ -121,7 +120,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
-      # Sends a slack notification to slack build channel on failure
+      # Sends a slack notification to slack build channel on Success
       - name: Slack Notification - On Success
         if: endsWith(GitHub.ref, 'main') && success()
         uses: submittable/action-slack-notify@v2.2.0
@@ -131,7 +130,7 @@ jobs:
           SLACK_MESSAGE: Unit tests passed successfully!
           SLACK_FOOTER: Powered By Submittable GitHub Actions Library
 
-      # Sends a slack notification to slack build channel
+      # Sends a slack notification to slack build channel on Failure
       - name: Slack Notification - On Failure
         if: endsWith(GitHub.ref, 'main') && failure()
         uses: submittable/action-slack-notify@v2.2.0

@@ -12,8 +12,6 @@ on:
         required: false
         type: string
     secrets:
-#       token:
-#         required: true
       SLACK_WEBHOOK:
         required: true
 
@@ -24,16 +22,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
+      - name: Check file existence
+        id: check_files
+        uses: andstor/file-existence-action@v1
+        with:
+          files: "Dockerfile"
+      
       - name: Set up QEMU
+        if: steps.check_files.outputs.files_exists == 'true'
         uses: docker/setup-qemu-action@v1
         
       #This action will set up and boot a builder that can be used in the workflow.
       - name: Set up Docker Buildx
+        if: steps.check_files.outputs.files_exists == 'true'
         uses: docker/setup-buildx-action@v1
         with:
           driver: docker
 
       - name: Login to GitHub Container Registry
+        if: steps.check_files.outputs.files_exists == 'true'
         uses: docker/login-action@v1.10.0
         with:
           registry: ghcr.io
@@ -43,6 +50,7 @@ jobs:
       # Reads the latest tag on the repo and increments its minor verions
       # Increment style can be changed by including a #major, #minor, or #patch in a commit message
       - name: Bump version and push tag
+        if: steps.check_files.outputs.files_exists == 'true'
         id: tag_version
         uses: submittable/github-tag-action@1.36.0
         env:
@@ -53,6 +61,7 @@ jobs:
 
       # Attempt to make the REF string valid docker tag syntax
       - name: Extract source branch/pr name
+        if: steps.check_files.outputs.files_exists == 'true'
         shell: bash
         run: |
           TEMP=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
@@ -61,6 +70,7 @@ jobs:
 
       # Collate the image name, tags, and labels for push command
       - name: Extract metadata (tags, labels) for Docker
+        if: steps.check_files.outputs.files_exists == 'true'
         id: meta
         uses: docker/metadata-action@v3.5.0
         with:
@@ -70,8 +80,10 @@ jobs:
             type=raw,value=${{ steps.tag_version.outputs.new_tag }}
             type=raw,value=${{ steps.extract_ref_tag.outputs.branch }}
             type=raw,value=${{ GitHub.sha }}
+
       # Build, Tag and Push the docker image to Github Container Registry
       - name: Build, Tag and Push Docker Image
+        if: steps.check_files.outputs.files_exists == 'true'
         uses: docker/build-push-action@v2.7.0
         with:
           context: ${{ inputs.context }}
@@ -89,23 +101,33 @@ jobs:
           tag_name: ${{ steps.tag_version.outputs.new_tag }}
           release_name: ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
-
-      # Sends a slack notification to slack build channel on failure
-      - name: Slack Notification - Failure
-        if: endsWith(GitHub.ref, 'main') && failure()
-        uses: submittable/notify-slack-action@v1
-        with:
-          footer: 'Linked Repo <{repo_url}|{repo}>'
-          status: ${{ job.status }}
-          notify_when: 'failure'
+      
+      # Sends a slack notification to slack build channel if Dockerfile is not present
+      - name: Slack Notification - Dockerfile not Present
+        if: steps.check_files.outputs.files_exists == 'false'
+        uses: submittable/action-slack-notify@v2.2.0
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: red
+          SLACK_MESSAGE: Dockerfile not found!
+          SLACK_FOOTER: Powered By Submittable GitHub Actions Library
 
-      # Sends a slack notification to slack build channel
-      - name: Slack Notification - Success
+      # Sends a slack notification to slack build channel on Success
+      - name: Slack Notification - On Success
         if: endsWith(GitHub.ref, 'main') && success()
         uses: submittable/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: Docker job for Release ${{ steps.tag_version.outputs.new_tag }} completed successfully.
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: Unit tests passed successfully!
+          SLACK_FOOTER: Powered By Submittable GitHub Actions Library
+
+      # Sends a slack notification to slack build channel on Failure
+      - name: Slack Notification - On Failure
+        if: endsWith(GitHub.ref, 'main') && failure()
+        uses: submittable/action-slack-notify@v2.2.0
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: Unit tests FAILED!
           SLACK_FOOTER: Powered By Submittable GitHub Actions Library

@@ -16,27 +16,19 @@ jobs:
   test:
       uses: submittable/github-actions/.github/workflows/test-ci.yml@main
       with:
-        repo_name: submittable-test-python-repo #change to the name of the project
+        repo_name: submittable-test-python-repo #CHANGE this to the name of the project
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   
   #Dockerize app      
-  docker-frontend:
+  docker:
       needs: test
       uses: submittable/github-actions/.github/workflows/reusable-docker.yml@main
       with:
       #this is a variable configured within the called workflow. in this case the image_name will be the repo name
         image_name: ${{ github.repository }}
-        #context: CHANGEME
+        context: .
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-  #docker-backend:
-      #uses: submittable/github-actions/.github/workflows/reusable-docker.yml@main
-      #with:
-      ##this is a variable configured within the called workflow. in this case the image_name will be the repo name
-        #image_name: ${{ github.repository }}
-        #context: CHANGEME
-      #secrets:
-        #SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
