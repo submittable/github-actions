@@ -283,7 +283,7 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: #fff00
-          SLACK_MESSAGE: Dockerfile not found - will continue build.
+          SLACK_MESSAGE: Dockerfile not found for ${{ steps.tag_version.outputs.new_tag }} - will continue build.
           SLACK_FOOTER: Powered By Submittable GitHub Actions Library
 
       # Sends a slack notification to slack build channel on Failure
