@@ -219,35 +219,9 @@ jobs:
         id: extract_ref_tag
       
       # Collate the image name, tags, and labels for push command
-      - name: Extract metadata (tags, labels) for Node Docker
-        if: steps.check_files_nodejs_docker.outputs.files_exists == 'true'
-        id: meta_node
-        uses: docker/metadata-action@v3.5.0
-        with:
-          images: ghcr.io/${{ inputs.image_name }}
-          tags: |
-            type=raw,value=latest,enable=${{ endsWith(GitHub.ref, 'main') }}
-            type=raw,value=${{ steps.tag_version.outputs.new_tag }}
-            type=raw,value=${{ steps.extract_ref_tag.outputs.branch }}
-            type=raw,value=${{ GitHub.sha }}
-      
-      # Collate the image name, tags, and labels for push command
-      - name: Extract metadata (tags, labels) for Python Docker
-        if: steps.check_files_python_docker.outputs.files_exists == 'true'
-        id: meta_python
-        uses: docker/metadata-action@v3.5.0
-        with:
-          images: ghcr.io/${{ inputs.image_name }}
-          tags: |
-            type=raw,value=latest,enable=${{ endsWith(GitHub.ref, 'main') }}
-            type=raw,value=${{ steps.tag_version.outputs.new_tag }}
-            type=raw,value=${{ steps.extract_ref_tag.outputs.branch }}
-            type=raw,value=${{ GitHub.sha }}
-      
-      # Collate the image name, tags, and labels for push command
-      - name: Extract metadata (tags, labels) for DotNet Docker
-        if: steps.check_files_csharp_docker.outputs.files_exists == 'true'
-        id: meta_csharp
+      - name: Extract metadata (tags, labels)
+        if: steps.check_files_docker.outputs.files_exists == 'true'
+        id: meta
         uses: docker/metadata-action@v3.5.0
         with:
           images: ghcr.io/${{ inputs.image_name }}
@@ -264,8 +238,8 @@ jobs:
         with:
           context: ${{ inputs.context }}
           push: true
-          tags: ${{ steps.meta_node.outputs.tags }}
-          labels: ${{ steps.meta_node.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       # Sends a slack notification to slack build channel on Success
       - name: Slack Notification - On Success
