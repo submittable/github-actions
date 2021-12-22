@@ -241,6 +241,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      # - name: Update Image
+
       # Sends a slack notification to slack build channel on Success
       - name: Slack Notification - On Success
         if: endsWith(GitHub.ref, 'main') && success()
