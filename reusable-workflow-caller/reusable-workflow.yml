@@ -12,23 +12,12 @@ on:
 
 jobs:
   
-  #Run tests & Sonar Scan
+  #Run Tests, Sonar Scans, Build and Publish Docker Image
   test:
-      uses: submittable/github-actions/.github/workflows/test-ci.yml@main
+      uses: submittable/github-actions/.github/workflows/ci.yml@main
       with:
         repo_name: submittable-test-python-repo #CHANGE this to the name of the project
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  
-  #Dockerize app      
-  docker:
-      needs: test
-      uses: submittable/github-actions/.github/workflows/reusable-docker.yml@main
-      with:
-      #this is a variable configured within the called workflow. in this case the image_name will be the repo name
-        image_name: ${{ github.repository }}
-        context: .
-      secrets:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
