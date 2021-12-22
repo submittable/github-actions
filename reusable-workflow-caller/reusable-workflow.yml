@@ -17,6 +17,9 @@ jobs:
       uses: submittable/github-actions/.github/workflows/ci.yml@main
       with:
         repo_name: submittable-test-python-repo #CHANGE this to the name of the project
+        image_name: ${{ github.repository }}
+        #CHANGE this value to the appropriate location of your dockerfile eg ./project/Dockerfile. Default is "." for root directory
+        context: .
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

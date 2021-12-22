@@ -6,6 +6,14 @@ on:
       repo_name:
         required: true
         type: string
+      image_name:
+        required: true
+        type: string
+      context:
+        description: 'adds the context path to the dockerfile'
+        default: '.'
+        required: false
+        type: string
     secrets:
       SLACK_WEBHOOK:
         required: true
