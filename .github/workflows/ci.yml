@@ -1,4 +1,4 @@
-name: Test & Sonar Scan Workflow
+name: Test, Sonar Scan and Docker Build-Push Workflow
 
 on:
   workflow_call:
