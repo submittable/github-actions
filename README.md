@@ -56,6 +56,7 @@ This repository contains github actions reusable workflows for CI/CD projects.
 
 5. Click ```Actions``` tab within repository and confirm that workflow is running successfully
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-21+at+10.48.28+AM.png)
+![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-23+at+7.17.39+PM.png)
 
 6. Feedback is sent to Slack ```builds``` channel once build is completed.
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-23+at+6.21.39+PM.png)
