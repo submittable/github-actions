@@ -1,19 +1,56 @@
+![image](https://www.libarts.colostate.edu/english/wp-content/uploads/sites/56/2019/10/Logo-Trans-Square-dc1c4a5d0772746ba773fd50374b673f.png)(https://miro.medium.com/max/1400/1*k99_arb0x9B7LI4I5hhCPw.png)
 # Submittable GitHub Action Reusable Workflow 2.0
 
-This repository contains github reusable workflows for Nodejs and Python projects. It runs tests and Sonar scan on the project.
+This repository contains github reusable workflows for CI/CD projects.
+
+⚙️Runtime Environment: ```Self hosted with Kubernetes Runners (ubuntu ) in EKS```
+⚙️Current k8 runner version: ```2.286.0```
+♻️GitHub Actions: 
+```
++++++++++++++++Docker
++++++++++++++++QEMU
++++++++++++++++Docker Buildx
++++++++++++++++GitHub Container Registry
++++++++++++++++File Checker
++++++++++++++++Nodejs
++++++++++++++++Python
++++++++++++++++.Net
++++++++++++++++SemVer
++++++++++++++++Bumb and Tag version
++++++++++++++++Docker Publish to GitHub Registry
++++++++++++++++Slack
+```
+Pipeline workflow: 
+```
++++++++++++++++Choose available runner (self-hosted)
+++++++++++++++++Checkout repo
++++++++++++++++++Set up QEMU
++++++++++++++++++Set up Docker Buildx
+++++++++++++++++Login to GitHub Container Registry
+++++++++++++++++Set Build Type using file extensions (Nodejs, Python, .Net)
++++++++++++++++++Run Tests (if test files are present)
+++++++++++++++++Sonar Scan for vulnerabilities (Output in Sonar UI). Slack alert coming soon...
++++++++++++++++++Bump version and push tag
++++++++++++++++++Extract source branch/pr name
++++++++++++++++++Extract metadata (tags, labels)
+++++++++++++++++Build, Tag and Push Docker Image
++++++++++++++++++Slack Notification - On Success
++++++++++++++++++Slack Notification - Dockerfile not Present
++++++++++++++++++Slack Notification - On Failure
+```
 ![image](https://joseph-project-files.s3.amazonaws.com/Universal+CI+Pipelines.png)
 
-## How to Install on project
+## How to Install
 
-1. Create a ```.github/workflows``` folder within the root directory
+1. Create folder ```.github/workflows``` in the root directory of your repo
 
-2. Create file ```workflow.yml``` and copy code from ```reusable-workflow-caller/reusable-workflow.yml```
+2. Create file ```ci.yml``` and copy code from ```reusable-workflow-caller/reusable-workflow.yml``` and save.
 
-3. Change the ```repo_name``` in line 19 of ```workflow.yml``` file to the project name. This will be consumed by Sonar scanner
+3. Edit file ```ci.yml``` and change ```repo_name``` value in line 19 of ```ci.yml``` file to the project name. This will be consumed by Sonar scanner
 
 4. Save and Create PR
 
-5. Check Actions tab within repository and confirm that workflow is running 
+5. Click ```Actions``` tab within repository and confirm that workflow is running successfully
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-21+at+10.48.28+AM.png)
 
 

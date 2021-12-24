@@ -51,27 +51,39 @@ jobs:
 
       - name: Check file existence for Nodejs
         id: check_files_nodejs
-        uses: andstor/file-existence-action@v1
+        uses: submittable/file-existence-action@v1
         with:
           files: "package.json"
       
       - name: Check file existence for Python
         id: check_files_python
-        uses: andstor/file-existence-action@v1
+        uses: submittable/file-existence-action@v1
         with:
           files: "requirements.txt"
       
-      - name: Check file existence for CSharp
-        id: check_files_csharp
-        uses: andstor/file-existence-action@v1
+      - name: Check file existence for .Net
+        id: check_files_dotnet
+        uses: submittable/file-existence-action@v1
         with:
           files: "project.csharp"
       
-      - name: Check file existence for Python-Docker
+      - name: Check file existence for Dockerfile
         id: check_files_docker
-        uses: andstor/file-existence-action@v1
+        uses: submittable/file-existence-action@v1
         with:
           files: "Dockerfile"
+
+      - name: Check file existence for Node Testfiles
+        id: check_files_nodejs_test
+        uses: submittable/file-existence-action@v1
+        with:
+          files: "test.js"
+      
+      - name: Check file existence for Python Testfiles
+        id: check_files_python_test
+        uses: submittable/file-existence-action@v1
+        with:
+          files: "/test/__init__.py"
 
       - name: Set Node Version
         if: steps.check_files_nodejs.outputs.files_exists == 'true'
@@ -89,7 +101,7 @@ jobs:
           python-version: 3.6
       
       - name: Setup DotNet Version
-        if: steps.check_files_csharp.outputs.files_exists == 'true'
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
         uses: actions/setup-dotnet@v1
         with:
         #choose which dotnet version default is 5.0.x
@@ -107,7 +119,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       
       - name: Install DotNet dependencies
-        if: steps.check_files_csharp.outputs.files_exists == 'true'
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
         run: dotnet restore
 
       - name: Build Nodejs App
@@ -122,25 +134,25 @@ jobs:
           flake8 . --count --select=E9,F63,F7,F82 --exit-zero --max-complexity=10 --max-line-length=127 --show-source --statistics
       
       - name: Build DotNet App
-        if: steps.check_files_csharp.outputs.files_exists == 'true'
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
         run: dotnet build
 
       - name: Run Nodejs tests
-        if: steps.check_files_nodejs.outputs.files_exists == 'true'
+        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
         run: npm test
       
       - name: Run Python tests
-        if: steps.check_files_python.outputs.files_exists == 'true'
+        if: steps.check_files_python_test.outputs.files_exists == 'true'
         run: python -m unittest discover tests
       
-      - name: Run DotNet test with the dotnet CLI
-        if: steps.check_files_csharp.outputs.files_exists == 'true'
+      - name: Run .Net test with .Net CLI
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
         run: dotnet test --settings coverlet.runsettings --logger:trx
         env:
           ASPNETCORE_ENVIRONMENT: Development
 
       - name: Archive production artifacts
-        if: steps.check_files.outputs.files_exists == 'true'
+        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
         uses: actions/upload-artifact@v2
         with:
           name: dist-without-markdown
@@ -149,7 +161,7 @@ jobs:
             !dist/**/*.md
 
       - name: Archive code coverage results
-        if: steps.check_files.outputs.files_exists == 'true'
+        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
         uses: actions/upload-artifact@v2
         with:
           name: code-coverage-report
@@ -186,7 +198,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
       - name: SonarScanner for .NET
-        if: steps.check_files_csharp.outputs.files_exists == 'true'
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
         uses: submittable/sonarscan-dotnet@v2.1.2
         with:
           # The key of the SonarQube project
