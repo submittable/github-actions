@@ -1,6 +1,7 @@
 # Submittable GitHub Action Reusable Workflow 2.0
 
 This repository contains github reusable workflows for Nodejs and Python projects. It runs tests and Sonar scan on the project.
+![image](https://joseph-project-files.s3.amazonaws.com/Universal+CI+Pipelines.png)
 
 ## How to Install on project
 
