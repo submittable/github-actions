@@ -1,5 +1,5 @@
 name: Reusable Workflow 2.0
-#This reusable workflows tests and scans the code for any vulnerabilities. Currently working on Python and Nodejs projects.
+#This reusable workflows tests and scans the code for any vulnerabilities. Currently working on Python, Nodejs and .Net projects.
 
 on:
   push:
