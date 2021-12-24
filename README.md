@@ -1,5 +1,5 @@
 ![image](https://www.libarts.colostate.edu/english/wp-content/uploads/sites/56/2019/10/Logo-Trans-Square-dc1c4a5d0772746ba773fd50374b673f.png)
-# Submittable GitHub Action Reusable Workflow 2.0
+# Submittable GitHub Actions Reusable Workflow 2.0
 
 This repository contains github reusable workflows for CI/CD projects.
 
@@ -22,7 +22,7 @@ This repository contains github reusable workflows for CI/CD projects.
 +++++++++++++++Docker Publish to GitHub Registry
 +++++++++++++++Slack
 ```
-### Pipeline workflow: ###
+### 👷Pipeline workflow: ###
 ```
 +++++++++++++++Choose available runner (self-hosted)
 ++++++++++++++++Checkout repo
