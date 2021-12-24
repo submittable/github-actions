@@ -4,7 +4,7 @@
 This repository contains github reusable workflows for CI/CD projects.
 
 ### 💻Runtime Environment: ### 
-```Self hosted with Kubernetes Runners (ubuntu ) in EKS```
+```Self hosted with Kubernetes Runners (Ubuntu 20.4) running internally in EKS```
 ### 💻Current k8 runner version: ### 
 ```2.286.0```
 ### ⚙️GitHub Actions: ###
