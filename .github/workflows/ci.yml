@@ -30,6 +30,7 @@ jobs:
     steps:
 
       - name: ✅🎉Universal Reusable Workflow 2.0 started✅🎉
+        run: echo Universal Reusable Workflow 2.0 started!
 
       - name: Checkout
         uses: actions/checkout@v2
