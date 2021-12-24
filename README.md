@@ -1,11 +1,11 @@
-![image](https://www.libarts.colostate.edu/english/wp-content/uploads/sites/56/2019/10/Logo-Trans-Square-dc1c4a5d0772746ba773fd50374b673f.png)(https://miro.medium.com/max/1400/1*k99_arb0x9B7LI4I5hhCPw.png)
+![image](https://www.libarts.colostate.edu/english/wp-content/uploads/sites/56/2019/10/Logo-Trans-Square-dc1c4a5d0772746ba773fd50374b673f.png)
 # Submittable GitHub Action Reusable Workflow 2.0
 
 This repository contains github reusable workflows for CI/CD projects.
 
-⚙️Runtime Environment: ```Self hosted with Kubernetes Runners (ubuntu ) in EKS```
-⚙️Current k8 runner version: ```2.286.0```
-♻️GitHub Actions: 
+```⚙️Runtime Environment:``` ```Self hosted with Kubernetes Runners (ubuntu ) in EKS```
+```⚙️Current k8 runner version:``` ```2.286.0```
+```♻️GitHub Actions:```
 ```
 +++++++++++++++Docker
 +++++++++++++++QEMU
