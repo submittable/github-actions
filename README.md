@@ -41,10 +41,10 @@ This repository contains github reusable workflows for CI/CD projects.
 +++++++++++++++++Slack Notification - On Failure
 ```
 
-### Workflow Diagram ###
+### ✏️Pipeline workflow Diagram ###
 ![image](https://joseph-project-files.s3.amazonaws.com/Universal+CI+Pipelines.png)
 
-## How to Install
+## 💾How to Install in project
 
 1. Create folder ```.github/workflows``` in the root directory of your repo
 
@@ -61,7 +61,7 @@ This repository contains github reusable workflows for CI/CD projects.
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-23+at+6.21.39+PM.png)
 
 
-## Manual Run
+## ⚙️Manual Run
 1. Go to your Actions tab and click on the workflow eg: ```Resuable Workflow 2.0```
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-21+at+10.48.28+AM.png)
 
