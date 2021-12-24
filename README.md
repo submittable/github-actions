@@ -1,7 +1,7 @@
 ![image](https://www.libarts.colostate.edu/english/wp-content/uploads/sites/56/2019/10/Logo-Trans-Square-dc1c4a5d0772746ba773fd50374b673f.png)
-# Submittable GitHub Actions Reusable Workflow 2.0
+# Submittable Universal Reusable Workflow 2.0
 
-This repository contains github reusable workflows for CI/CD projects.
+This repository contains github actions reusable workflows for CI/CD projects.
 
 ### 💻Runtime Environment: ### 
 ```Self hosted with Kubernetes Runners (Ubuntu 20.4) running internally in EKS```
