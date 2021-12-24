@@ -252,6 +252,17 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      
+      # Creates a Github release with the new semantic version
+      - name: Create a GitHub Semantic release
+        if: ${{ success() && (github.ref == 'refs/heads/main' || github.base_ref == 'main') }}
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}
 
       # - name: Update Image
 
