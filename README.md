@@ -40,6 +40,8 @@ This repository contains github reusable workflows for CI/CD projects.
 +++++++++++++++++Slack Notification - Dockerfile not Present
 +++++++++++++++++Slack Notification - On Failure
 ```
+
+### Workflow Diagram ###
 ![image](https://joseph-project-files.s3.amazonaws.com/Universal+CI+Pipelines.png)
 
 ## How to Install
