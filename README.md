@@ -3,9 +3,9 @@
 
 This repository contains github reusable workflows for CI/CD projects.
 
-```+++⚙️Runtime Environment:``` ```Self hosted with Kubernetes Runners (ubuntu ) in EKS```
-```+++⚙️Current k8 runner version:``` ```2.286.0```
-```+++♻️GitHub Actions:```
+### ⚙️Runtime Environment: ### ```Self hosted with Kubernetes Runners (ubuntu ) in EKS```
+### ⚙️Current k8 runner version: ### ```2.286.0```
+### ♻️GitHub Actions: ###
 ```
 +++++++++++++++Docker
 +++++++++++++++QEMU
@@ -20,7 +20,7 @@ This repository contains github reusable workflows for CI/CD projects.
 +++++++++++++++Docker Publish to GitHub Registry
 +++++++++++++++Slack
 ```
-Pipeline workflow: 
+### Pipeline workflow: ###
 ```
 +++++++++++++++Choose available runner (self-hosted)
 ++++++++++++++++Checkout repo
