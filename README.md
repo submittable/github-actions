@@ -61,7 +61,7 @@ This repository contains github actions reusable workflows for CI/CD projects.
 6. Sonarqube Scan
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-23+at+7.24.59+PM.png)
 
-7. Feedback is sent to Slack ```builds``` channel once build is completed.
+7. Feedback is sent to Slack ```builds``` channel once build is completed. Notification occurs on PR to ```main``` branch
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-23+at+6.21.39+PM.png)
 
 
