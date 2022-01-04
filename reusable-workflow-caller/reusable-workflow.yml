@@ -1,0 +1,26 @@
+name: Reusable Workflow 2.0
+#This reusable workflows tests and scans the code for any vulnerabilities. Currently working on Python, Nodejs and .Net projects.
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  
+  #Run Tests, Sonar Scans, Build and Publish Docker Image
+  ci:
+      uses: submittable/github-actions/.github/workflows/ci.yml@main
+      with:
+        repo_name: submittable-test-python-repo #CHANGE this to the name of the project
+        image_name: ${{ github.repository }}
+        #CHANGE this value to the appropriate location of your dockerfile eg ./project/Dockerfile. Default is "." for root directory
+        context: .
+      secrets:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
