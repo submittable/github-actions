@@ -5,13 +5,13 @@ This repository contains github actions reusable workflows for CI/CD projects.
 
 ### 💻Runtime Environment: ### 
 ```Self hosted with Kubernetes Runners (Ubuntu 20.4) running internally in EKS```
-### 💻Current k8 runner version: ### 
+### 💻K8 runner version: ### 
 ```2.286.0```
-### 💻Current Python version: ###
+### 💻Python version: ###
 ```3.6```
-### 💻Current NodeJS version: ###
+### 💻NodeJS version: ###
 ```15.x```
-### 💻Current .Net version: ###
+### 💻.Net version: ###
 ```5.0.x```
 ### ⚙️GitHub Actions: ###
 ```
