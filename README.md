@@ -48,7 +48,7 @@ This repository contains github actions reusable workflows for CI/CD projects.
 ```
 
 ### ✏️Pipeline workflow Diagram ###
-![image](https://joseph-project-files.s3.amazonaws.com/Universal+CI+Pipelines.png)
+![image](https://joseph-project-files.s3.amazonaws.com/Universal+Workflow.png)
 
 ## 💾How to Install in project
 
