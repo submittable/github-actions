@@ -52,22 +52,24 @@ This repository contains github actions reusable workflows for CI/CD projects.
 
 ## 💾How to Install in project
 
-1. Create folder ```.github/workflows``` in the root directory of your repo
+1. Change ```master``` branch to ```main``` to allow for Semantinc Release
 
-2. Create file ```ci.yml``` and copy code from ```reusable-workflow-caller/reusable-workflow.yml``` and save.
+2. Create folder ```.github/workflows``` in the root directory of your repo
 
-3. Edit file ```ci.yml``` and change ```repo_name``` value in line 19 of ```ci.yml``` file to the project name. This will be consumed by Sonar scanner
+3. Create file ```ci.yml``` and copy code from ```reusable-workflow-caller/reusable-workflow.yml``` and save.
 
-4. Save and Create PR
+4. Edit file ```ci.yml``` and change ```repo_name``` value in line 19 of ```ci.yml``` file to the project name. This will be consumed by Sonar scanner
 
-5. Click ```Actions``` tab within repository and confirm that workflow is running successfully
+5. Save and Create PR
+
+6. Click ```Actions``` tab within repository and confirm that workflow is running successfully
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-21+at+10.48.28+AM.png)
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-23+at+7.17.39+PM.png)
 
-6. Sonarqube Scan
+7. Sonarqube Scan
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-23+at+7.24.59+PM.png)
 
-7. Feedback is sent to Slack ```builds``` channel once build is completed. Notification occurs on PR to ```main``` branch
+8. Feedback is sent to Slack ```builds``` channel once build is completed. Notification occurs on PR to ```main``` branch
 ![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2021-12-23+at+6.21.39+PM.png)
 
 
