@@ -272,7 +272,7 @@ jobs:
           # The name of the SonarQube project
           sonarProjectName:  ${{ inputs.repo_name }}
           # Optional command arguments to dotnet build
-          dotnetBuildArguments: ./SQSListener/SQSListener
+          dotnetBuildArguments: ./Source/ExampleSamlIdentityProvider
           # Optional. Set to 1 or true to not run 'dotnet test' command
           dotnetDisableTests: true
           # The SonarQube server URL. For SonarCloud, skip this setting.
