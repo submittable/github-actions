@@ -65,11 +65,17 @@ jobs:
         with:
           files: "requirements.txt"
       
-      - name: Check file existence for .Net services
-        id: check_files_dotnet_sonar
+      - name: Check file existence for .Net services Project
+        id: check_files_dotnet_sonar_services
         uses: submittable/file-existence-action@v1
         with:
           files: "Submittable.Serverless.sln"
+      
+      - name: Check file existence for .Net manager.submittable.com Project
+        id: check_files_dotnet_sonar_manager_submittable_com
+        uses: submittable/file-existence-action@v1
+        with:
+          files: "Source/Submittable.Api"
       
       - name: Check file existence for .Net
         id: check_files_dotnet
@@ -207,8 +213,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
-      - name: SonarScanner for .NET
-        if: steps.check_files_dotnet_sonar.outputs.files_exists == 'true'
+      - name: SonarScanner for .NET services Project
+        if: steps.check_files_dotnet_sonar_services.outputs.files_exists == 'true'
         uses: submittable/sonarscan-dotnet@v2.1.2
         with:
           # The key of the SonarQube project
@@ -217,6 +223,26 @@ jobs:
           sonarProjectName:  ${{ inputs.repo_name }}
           # Optional command arguments to dotnet build
           dotnetBuildArguments: ./src/Submittable.Api
+          # Optional. Set to 1 or true to not run 'dotnet test' command
+          dotnetDisableTests: true
+          # The SonarQube server URL. For SonarCloud, skip this setting.
+          sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: SonarScanner for .NET manag Project
+        if: steps.check_files_dotnet_sonar_manager_submittable_com.outputs.files_exists == 'true'
+        uses: submittable/sonarscan-dotnet@v2.1.2
+        with:
+          # The key of the SonarQube project
+          sonarProjectKey: ${{ inputs.repo_name }}
+          # The name of the SonarQube project
+          sonarProjectName:  ${{ inputs.repo_name }}
+          # Optional command arguments to dotnet build
+          dotnetBuildArguments: ./Source/Submittable.Api
+          # Optional. Set to 1 or true to not run 'dotnet test' command
+          dotnetDisableTests: true
           # The SonarQube server URL. For SonarCloud, skip this setting.
           sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
         env:
