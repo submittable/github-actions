@@ -57,7 +57,7 @@ jobs:
         id: check_files_nodejs
         uses: submittable/file-existence-action@v1
         with:
-          files: "package.json"
+          files: "package.json, Dockerfile, next.config.js"
       
       - name: Check file existence for Python
         id: check_files_python
