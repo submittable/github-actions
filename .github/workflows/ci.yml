@@ -215,6 +215,8 @@ jobs:
           sonarProjectKey: ${{ inputs.repo_name }}
           # The name of the SonarQube project
           sonarProjectName:  ${{ inputs.repo_name }}
+          # Optional command arguments to dotnet build
+          dotnetBuildArguments: ./Source/Submittable.Api
           # The SonarQube server URL. For SonarCloud, skip this setting.
           sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
         env:
