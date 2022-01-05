@@ -256,7 +256,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: SonarScanner for .NET SQSListener Project
-        if: steps.check_files_dotnet_sonar_manager_submittable_com.outputs.files_exists == 'true'
+        if: steps.check_files_dotnet_sonar_sqs_listener.outputs.files_exists == 'true'
         uses: submittable/sonarscan-dotnet@v2.1.2
         with:
           # The key of the SonarQube project
