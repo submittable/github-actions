@@ -65,11 +65,11 @@ jobs:
         with:
           files: "requirements.txt"
       
-      - name: Check file existence for .Net Sonar Scan
+      - name: Check file existence for .Net manager.submittable.com
         id: check_files_dotnet_sonar
         uses: submittable/file-existence-action@v1
         with:
-          files: "Submittable.Serverless.sln, Source/Packages.dgml, version.json"
+          files: "Source/Packages.dgml"
       
       - name: Check file existence for .Net
         id: check_files_dotnet
