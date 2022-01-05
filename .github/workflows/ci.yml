@@ -69,7 +69,7 @@ jobs:
         id: check_files_dotnet_sonar
         uses: submittable/file-existence-action@v1
         with:
-          files: "Source/Packages.dgml"
+          files: "Submittable.Serverless.sln"
       
       - name: Check file existence for .Net
         id: check_files_dotnet
@@ -93,7 +93,7 @@ jobs:
         id: check_files_python_test
         uses: submittable/file-existence-action@v1
         with:
-          files: "/test/__init__.py"
+          files: "test/__init__.py"
 
       - name: Set Node Version
         if: steps.check_files_nodejs.outputs.files_exists == 'true'
@@ -216,7 +216,7 @@ jobs:
           # The name of the SonarQube project
           sonarProjectName:  ${{ inputs.repo_name }}
           # Optional command arguments to dotnet build
-          dotnetBuildArguments: ./Source/Submittable.Api
+          dotnetBuildArguments: ./src/Submittable.Api
           # The SonarQube server URL. For SonarCloud, skip this setting.
           sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
         env:
