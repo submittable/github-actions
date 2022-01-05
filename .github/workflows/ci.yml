@@ -109,7 +109,7 @@ jobs:
         id: check_files_python_test
         uses: submittable/file-existence-action@v1
         with:
-          files: "test/__init__.py"
+          files: "test/*.py"
 
       - name: Set Node Version
         if: steps.check_files_nodejs.outputs.files_exists == 'true'
