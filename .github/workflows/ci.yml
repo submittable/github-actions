@@ -65,7 +65,7 @@ jobs:
         with:
           files: "requirements.txt"
       
-      - name: Check file existence for .Net manager.submittable.com
+      - name: Check file existence for .Net services
         id: check_files_dotnet_sonar
         uses: submittable/file-existence-action@v1
         with:
