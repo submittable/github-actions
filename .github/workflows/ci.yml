@@ -256,7 +256,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
       - name: SonarScanner for .NET
-        if: steps.check_files_dotnet_sonar_services.outputs.files_exists == 'true'
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
         uses: submittable/sonarscan-dotnet@v2.1.2
         with:
           # The key of the SonarQube project
