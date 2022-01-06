@@ -20,7 +20,7 @@ jobs:
         nodejs_version: '15.x' #Choose which node version [10.x, 12.x, 14.x, 15.x]. Default is 15.x
         dotnet_version: '5.0.x' #choose which dotnet version default is 5.0.x
         python_version: '3.6' #Choose which python version [3.6, 3.7, 3.8, 3.9]. default is 3.6
-      ##############SET BUILD TYPE NODEJS, PYTHON OR .NET - CHOOSE ONE################
+      ##############SET BUILD TYPE NODEJS, PYTHON OR .NET - CHOOSE ONE (REQUIRED)################
         file_check_path_python: "nofile" #CHANGE this to a file name or path to the file to set build type to Python ex: requirement.txt or Source/requirement.txt (absolute/full path)
         file_check_path_nodejs: "nofile" #CHANGE this to a file name or path to the file to set build type to Node ex: package.json or src/package.json (absolute/full path)
         file_check_path_dotnet: "nofile" #CHANGE this to a file name or path to the file to set build type to .Net ex: SQSListener.csproj or SQSListener/SQSListener/SQSListener.csproj (absolute/full path)
