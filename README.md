@@ -58,7 +58,7 @@ This repository contains github actions reusable workflows for CI/CD projects.
 
 3. Create file ```ci.yml``` and copy code from ```reusable-workflow-caller/reusable-workflow.yml``` and save.
 
-4. Edit file ```ci.yml``` and make changes where necessary where you see ```#CHANGE```
+4. Edit file ```ci.yml``` and make changes where necessary where you see ```#CHANGE``` or ```#Choose``` options
 
 5. Save and Create PR
 
