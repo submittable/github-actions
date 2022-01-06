@@ -21,13 +21,13 @@ jobs:
         dotnet_version: '5.0.x' #choose which dotnet version default is 5.0.x
         python_version: '3.6' #Choose which python version [3.6, 3.7, 3.8, 3.9]. default is 3.6
       ##############SET BUILD TYPE NODEJS, PYTHON OR .NET - CHOOSE ONE################
-        file_check_path_python: "nofile" #CHANGE this to a file name or path to the file to set build type to Python ex: requirement.txt or Source/requirement.txt or Source/*.txt
-        file_check_path_nodejs: "nofile" #CHANGE this to a file name or path to the file to set build type to Node ex: package.json or src/package.json or src/*.json
-        file_check_path_dotnet: "nofile" #CHANGE this to a file name or path to the file to set build type to .Net ex: SQSListener.csproj or SQSListener/SQSListener/SQSListener.csproj or SQSListener/SQSListener/*.csproj
+        file_check_path_python: "nofile" #CHANGE this to a file name or path to the file to set build type to Python ex: requirement.txt or Source/requirement.txt (absolute/full path)
+        file_check_path_nodejs: "nofile" #CHANGE this to a file name or path to the file to set build type to Node ex: package.json or src/package.json (absolute/full path)
+        file_check_path_dotnet: "nofile" #CHANGE this to a file name or path to the file to set build type to .Net ex: SQSListener.csproj or SQSListener/SQSListener/SQSListener.csproj (absolute/full path)
       ###########################################################################################
       ##############UNIT TESTS - CHOOSE AN OPTION (OPTIONAL)################
-        file_check_path_nodejs_test: "nofile" #CHANGE this to the location of your test file for python ex: package.json or src/package.json or src/*.json
-        file_check_path_python_test: "nofile" #CHANGE this to the location of your test file for python ex: requirement.txt or Source/requirement.txt or Source/*.txt
+        file_check_path_nodejs_test: "nofile" #CHANGE this to the location of your test file for python ex: package.json or src/package.json
+        file_check_path_python_test: "nofile" #CHANGE this to the location of your test file for python ex: requirement.txt or Source/requirement.txt
       ######################################################################
       ##########FOR .NET SONAR SCAN ONLY##################
         dotnetbuildarguments: 'src/Submittable.Api' #Set the path to dotnet build for SonarQube
