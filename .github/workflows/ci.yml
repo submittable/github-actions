@@ -248,7 +248,6 @@ jobs:
           projectBaseDir: .
           args: >
             -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.tests=test/
             -Dsonar.verbose=true
             -Dsonar.projectKey=${{ inputs.repo_name }}
             -Dsonar.sources=.
