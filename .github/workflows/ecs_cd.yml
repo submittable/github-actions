@@ -8,13 +8,9 @@ on:
         description: 'The name of the calling repo'
         type: string
       environment:
-        type: choice # TODO Test using environment type
+        type: string
         description: 'The ECS environment to deploy to'
         required: true
-        options:
-        - dev
-        - staging
-        - prod
       image_tag:
         type: string
         description: 'The Image tag to release. See GHCR available images'
