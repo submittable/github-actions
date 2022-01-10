@@ -1,4 +1,4 @@
-name: Deploy 
+name: Deploy Image to ECS Cluster
 
 on:
   workflow_call:
@@ -41,7 +41,7 @@ on:
         required: true
 
 jobs:
-  build:
+  ecs_deploy:
     runs-on: self-hosted
     steps:
 
