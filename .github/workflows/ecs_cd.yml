@@ -1,0 +1,102 @@
+name: Deploy 
+
+on:
+  workflow_call:
+    inputs:
+      repo_name:
+        required: true
+        description: 'The name of the calling repo'
+        type: string
+      environment:
+        type: choice # TODO Test using environment type
+        description: 'The ECS environment to deploy to'
+        required: true
+        options:
+        - dev
+        - staging
+        - prod
+      image_tag:
+        type: string
+        description: 'The Image tag to release. See GHCR available images'
+        default: 'release'
+        required: true
+      aws_ecs_cluster_name:
+        type: string
+        description: 'AWS ECS Cluster to update'
+        required: true
+      aws_ecs_service_name:
+        type: string
+        description: 'AWS ECS Service in the specified cluster to update'
+        required: true
+      aws_ecs_task_file:
+        type: string
+        description: 'File path to task definition template to use, relative to workflow directory'
+        required: true
+      aws_ecs_container_name:
+        type: string
+        description: 'The name of the container in the task to update the image of'
+        required: true
+    secrets:
+      SLACK_WEBHOOK:
+        required: true
+      AWS_ACCESS_KEY_ID:
+       required: true
+      AWS_ACCESS_KEY_SECRET:
+        required: true
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+
+      - name: ✅🎉Reusable ECS Image Deploy Workflow started✅🎉
+        run: echo Reusable ECS Image Deploy Workflow started
+
+      # Auth with AWS
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+          aws-region: us-east-1
+
+      # Checkout repo files
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Update task definition file with new image
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1.1.0
+        with:
+          task-definition: ${{ inputs.aws_ecs_task_file }}
+          container-name: ${{ inputs.aws_ecs_container_name }}
+          image: ghcr.io/submittable/${{ inputs.repo_name }}:${{ inputs.image_tag }}
+
+      # Update target environment service with new task definition
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1.4.8
+        with:
+          cluster: ${{ inputs.aws_ecs_cluster_name }}
+          service: ${{ inputs.aws_ecs_service_name }}
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          wait-for-service-stability: true
+
+      # Sends a slack notification to slack build channel on failure
+      - name: Report Failure to Slack
+        if: ${{ failure() }}
+        uses: submittable/action-slack-notify@v2.2.0
+        with:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: Failure - ECS Deployment of Image ${{ inputs.image_tag }} to Environment ${{ inputs.environment }}.
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_FOOTER: Powered By Submittable GitHub Actions Library
+
+      # Sends a slack notification to slack build channel
+      - name: Report Success to Slack
+        if: ${{ success() }}
+        uses: submittable/action-slack-notify@v2.2.0
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: Success - ECS Deployment of Image ${{ inputs.image_tag }} to Environment ${{ inputs.environment }}.
+          SLACK_FOOTER: Powered By Submittable GitHub Actions Library
