@@ -19,7 +19,7 @@ on:
         required: false
         type: string
       dotnet_version:
-        description: 'sets .net version'
+        description: 'sets .net version for dotnet core application'
         default: '5.0.x'
         required: false
         type: string
@@ -189,7 +189,8 @@ jobs:
         
       - name: Restore nuget packages
         if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        run: nuget restore ./${{ inputs.file_check_path_dotnet }}
+        run: dotnet restore
+        # run: nuget restore ./${{ inputs.file_check_path_dotnet }}
       
       - name: Build DotNet App
         if: steps.check_files_dotnet.outputs.files_exists == 'true'
