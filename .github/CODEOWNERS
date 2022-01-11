@@ -1,0 +1,17 @@
+# Lines starting with '#' are comments.
+# Each line is a file pattern followed by one or more owners.
+
+# These owners will be the default owners for everything in the repo.
+# You can set owner by Github @mention
+# * @tevans-submittable
+# You can also set owner by email
+# * thomas.evans@submittable.com
+
+# Order is important. The last matching pattern has the most precedence.
+# So if a pull request only touches javascript files, only these owners
+# will be requested to review.
+
+##### CODE OWNERS #####
+
+# Workflow baseline templates require DevOps group review
+.github/workflows/* @submittable/devops
