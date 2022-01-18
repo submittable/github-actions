@@ -39,8 +39,6 @@ on:
        required: true
       AWS_ACCESS_KEY_SECRET:
         required: true
-      GITHUB_TOKEN:
-        required: true
 
 jobs:
   ecs_deploy:
