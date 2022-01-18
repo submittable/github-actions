@@ -96,7 +96,7 @@ jobs:
       - name: Report Failure to Slack
         if: ${{ failure() }}
         uses: submittable/action-slack-notify@v2.2.0
-        with:
+        env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: Failure - ECS Deployment of Image ${{ inputs.image_tag }} to Environment ${{ inputs.environment }}.
           SLACK_COLOR: ${{ job.status }}
