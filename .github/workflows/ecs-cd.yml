@@ -72,7 +72,7 @@ jobs:
       - name: Get Latest Tagged Image Digest
         run: |
           docker pull ghcr.io/submittable/${{ inputs.repo_name }}:${{ inputs.image_tag }}
-          echo "IMAGE_TAG_DIGEST=$(docker inspect --format {{(index .RepoDigests 0)}} ghcr.io/submittable/${{ inputs.repo_name }}:${{ inputs.image_tag }})" >> $GITHUB_ENV
+          echo "IMAGE_TAG_DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' ghcr.io/submittable/${{ inputs.repo_name }}:${{ inputs.image_tag }})" >> $GITHUB_ENV
 
       # Update task definition file with new image
       - name: Fill in the new image ID in the Amazon ECS task definition
