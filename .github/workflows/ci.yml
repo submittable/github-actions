@@ -5,7 +5,7 @@ on:
     inputs:
       dotnetbuildarguments:
         description: 'Optional command arguments to dotnet build'
-        default: 'src/Submittable.Api'
+        default: 'nofile'
         required: false
         type: string
       nodejs_version:
