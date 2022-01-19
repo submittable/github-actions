@@ -3,6 +3,51 @@ name: Test, Sonar Scan and Docker Build-Push Workflow
 on:
   workflow_call:
     inputs:
+      dotnetbuildarguments:
+        description: 'Optional command arguments to dotnet build'
+        default: 'nofile'
+        required: false
+        type: string
+      nodejs_version:
+        description: 'sets node version'
+        default: '15.x'
+        required: false
+        type: string
+      python_version:
+        description: 'sets python version'
+        default: '3.6'
+        required: false
+        type: string
+      dotnet_version:
+        description: 'sets .net version for dotnet core application'
+        default: '5.0.x'
+        required: false
+        type: string
+      file_check_path_nodejs_test:
+        description: 'checks file path to enable nodejs unit test'
+        default: "nofile"
+        required: false
+        type: string
+      file_check_path_python_test:
+        description: 'checks file path to enable python unit test'
+        default: "nofile"
+        required: false
+        type: string
+      file_check_path_python:
+        description: 'checks file path to identify as a python pipeline job'
+        default: "nofile"
+        required: false
+        type: string
+      file_check_path_nodejs:
+        description: 'checks file path to identify as a nodejs pipeline job'
+        default: "nofile"
+        required: false
+        type: string
+      file_check_path_dotnet:
+        description: 'checks file path to identify as a dotnet pipeline job'
+        default: "nofile"
+        required: false
+        type: string
       repo_name:
         required: true
         type: string
@@ -57,20 +102,28 @@ jobs:
         id: check_files_nodejs
         uses: submittable/file-existence-action@v1
         with:
-          files: "package.json"
+          files: "${{ inputs.file_check_path_nodejs }}"
       
       - name: Check file existence for Python
         id: check_files_python
         uses: submittable/file-existence-action@v1
         with:
-          files: "requirements.txt"
+          files: "${{ inputs.file_check_path_python }}"
       
       - name: Check file existence for .Net
         id: check_files_dotnet
         uses: submittable/file-existence-action@v1
         with:
-          files: "project.csharp"
+          files: "${{ inputs.file_check_path_dotnet }}"
       
+      - name: Setup Nuget
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        uses: Nuget/setup-nuget@v1.0.5
+      
+      - name: Add msbuild to PATH
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        uses: microsoft/setup-msbuild@v1.0.2
+
       - name: Check file existence for Dockerfile
         id: check_files_docker
         uses: submittable/file-existence-action@v1
@@ -81,35 +134,32 @@ jobs:
         id: check_files_nodejs_test
         uses: submittable/file-existence-action@v1
         with:
-          files: "test.js"
+          files: "${{ inputs.file_check_path_nodejs_test }}"
       
       - name: Check file existence for Python Testfiles
         id: check_files_python_test
         uses: submittable/file-existence-action@v1
         with:
-          files: "/test/__init__.py"
+          files: "${{ inputs.file_check_path_python_test }}"
 
       - name: Set Node Version
         if: steps.check_files_nodejs.outputs.files_exists == 'true'
         # Only runs if all of the files exists
         uses: actions/setup-node@v2
         with:
-        #Choose which node version [10.x, 12.x, 14.x, 15.x]. Default is 15.x
-          node-version: 15.x
+          node-version: ${{ inputs.nodejs_version }}
       
       - name: Set Python Version
         if: steps.check_files_python.outputs.files_exists == 'true'
         uses: actions/setup-python@v2
         with:
-        #choose which python version [3.6, 3.7, 3.8, 3.9]. default is 3.6
-          python-version: 3.6
+          python-version: ${{ inputs.python_version }}
       
       - name: Setup DotNet Version
         if: steps.check_files_dotnet.outputs.files_exists == 'true'
         uses: actions/setup-dotnet@v1
         with:
-        #choose which dotnet version default is 5.0.x
-          dotnet-version: '5.0.x'
+          dotnet-version: '${{ inputs.dotnet_version }}'
       
       - name: Install Nodejs Dependencies
         if: steps.check_files_nodejs.outputs.files_exists == 'true'
@@ -136,6 +186,11 @@ jobs:
           # stop the build if there are Python syntax errors or undefined names
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --select=E9,F63,F7,F82 --exit-zero --max-complexity=10 --max-line-length=127 --show-source --statistics
+        
+      - name: Restore nuget packages
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        run: dotnet restore
+        # run: nuget restore ./${{ inputs.file_check_path_dotnet }}
       
       - name: Build DotNet App
         if: steps.check_files_dotnet.outputs.files_exists == 'true'
@@ -194,9 +249,9 @@ jobs:
           projectBaseDir: .
           args: >
             -Dsonar.python.coverage.reportPaths=coverage.xml
-            -Dsonar.tests=tests/
             -Dsonar.verbose=true
             -Dsonar.projectKey=${{ inputs.repo_name }}
+            -Dsonar.sources=.
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -209,6 +264,10 @@ jobs:
           sonarProjectKey: ${{ inputs.repo_name }}
           # The name of the SonarQube project
           sonarProjectName:  ${{ inputs.repo_name }}
+          # Optional command arguments to dotnet build
+          dotnetBuildArguments: ./${{ inputs.dotnetbuildarguments }}
+          # Optional. Set to 1 or true to not run 'dotnet test' command
+          dotnetDisableTests: true
           # The SonarQube server URL. For SonarCloud, skip this setting.
           sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
         env:
@@ -259,7 +318,8 @@ jobs:
       
       # Creates a Github release with the new semantic version
       - name: Create a GitHub Semantic release
-        if: ${{ success() && (github.ref == 'refs/heads/main' || github.base_ref == 'main') }}
+        if: endsWith(GitHub.ref, 'main') && success()
+        # if: ${{ success() && (github.ref == 'refs/heads/main' || github.base_ref == 'main') }}
         uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
