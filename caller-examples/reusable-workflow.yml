@@ -35,7 +35,7 @@ jobs:
         repo_name: submittable-test-python-repo #CHANGE this to the name of the project
         image_name: ${{ github.repository }}
         context: . #CHANGE this value to the appropriate location of your dockerfile eg ./project/ default is "." for root directory
-        dockerfile: . #CHANGE this value to the appropriate location of your dockerfile eg ./project/Dockerfile default is "." for root directory
+        file: 'Dockerfile' #CHANGE this value to the appropriate location of your dockerfile eg ./project/Dockerfile default is "." for root directory
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
