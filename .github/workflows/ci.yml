@@ -54,6 +54,11 @@ on:
       image_name:
         required: true
         type: string
+      dockerfile:
+        description: 'adds the path to the dockerfile'
+        default: '.'
+        required: false
+        type: string
       context:
         description: 'adds the context path to the dockerfile'
         default: '.'
@@ -312,6 +317,7 @@ jobs:
         uses: docker/build-push-action@v2.7.0
         with:
           context: ${{ inputs.context }}
+          dockerfile: ${{ inputs.dockerfile }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
