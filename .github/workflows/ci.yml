@@ -54,11 +54,11 @@ on:
       image_name:
         required: true
         type: string
-      file:
-        description: 'adds the path to the dockerfile ./Dockerfile or root Dockerfile'
-        default: 'Dockerfile'
-        required: false
-        type: string
+#       file:
+#         description: 'adds the path to the dockerfile ./Dockerfile or root Dockerfile'
+#         default: 'Dockerfile'
+#         required: false
+#         type: string
       context:
         description: 'adds the context path to the dockerfile'
         default: '.'
@@ -320,7 +320,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: ${{ inputs.file }}
+#           file: ${{ inputs.file }}
       
       # Creates a Github release with the new semantic version
       - name: Create a GitHub Semantic release
