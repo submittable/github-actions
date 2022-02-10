@@ -46,7 +46,8 @@
 ```
 
 ### ✏️Pipeline workflow Diagram ###
-![image](https://joseph-project-files.s3.amazonaws.com/Universal+CI+Pipelines.png)
+![image](https://joseph-project-files.s3.amazonaws.com/Universal+Workflow.png)
+![image](https://joseph-project-files.s3.amazonaws.com/Screen+Shot+2022-02-10+at+8.46.25+AM.png)
 
 ## 💾How to Install in project
 
