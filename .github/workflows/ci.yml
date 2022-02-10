@@ -310,9 +310,6 @@ jobs:
             type=raw,value=${{ steps.tag_version.outputs.new_tag }}
             type=raw,value=${{ steps.extract_ref_tag.outputs.branch }}
             type=raw,value=${{ GitHub.sha }}
-            
-      - name: Checkout
-        uses: actions/checkout@v2
       
       # Build, Tag and Push the docker image to Github Container Registry
       - name: Build, Tag and Push Docker Image
