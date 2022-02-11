@@ -317,7 +317,7 @@ jobs:
         uses: docker/build-push-action@v2.7.0
         with:
           context: ${{ inputs.context }}
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' || github.base_ref == 'release' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 #           file: ${{ inputs.file }}
