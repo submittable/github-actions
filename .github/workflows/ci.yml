@@ -120,9 +120,9 @@ jobs:
         if: steps.check_files_dotnet.outputs.files_exists == 'true'
         uses: Nuget/setup-nuget@v1.0.5
       
-      - name: Add msbuild to PATH
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        uses: microsoft/setup-msbuild@v1.0.2
+      # - name: Add msbuild to PATH
+      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
+      #   uses: microsoft/setup-msbuild@v1.0.2
 
       - name: Check file existence for Dockerfile
         id: check_files_docker
