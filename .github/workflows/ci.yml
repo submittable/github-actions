@@ -300,7 +300,7 @@ jobs:
       
       # Collate the image name, tags, and labels for push command
       - name: Extract metadata (tags, labels)
-        if: steps.check_files_docker.outputs.files_exists == 'true'
+#         if: steps.check_files_docker.outputs.files_exists == 'true'
         id: meta
         uses: docker/metadata-action@v3.5.0
         with:
