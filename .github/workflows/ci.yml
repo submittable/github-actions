@@ -204,11 +204,11 @@ jobs:
         if: steps.check_files_python_test.outputs.files_exists == 'true'
         run: python -m unittest discover tests
       
-      - name: Run .Net test with .Net CLI
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        run: dotnet test --settings coverlet.runsettings --logger:trx
-        env:
-          ASPNETCORE_ENVIRONMENT: Development
+      # - name: Run .Net test with .Net CLI
+      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
+      #   run: dotnet test --settings coverlet.runsettings --logger:trx
+      #   env:
+      #     ASPNETCORE_ENVIRONMENT: Development
 
       - name: Archive production artifacts
         if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
