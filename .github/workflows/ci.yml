@@ -54,6 +54,11 @@ on:
       image_name:
         required: true
         type: string
+#       file:
+#         description: 'adds the path to the dockerfile ./Dockerfile or root Dockerfile'
+#         default: 'Dockerfile'
+#         required: false
+#         type: string
       context:
         description: 'adds the context path to the dockerfile'
         default: '.'
@@ -120,9 +125,9 @@ jobs:
         if: steps.check_files_dotnet.outputs.files_exists == 'true'
         uses: Nuget/setup-nuget@v1.0.5
       
-      # - name: Add msbuild to PATH
-      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
-      #   uses: microsoft/setup-msbuild@v1.0.2
+#       - name: Add msbuild to PATH
+#         if: steps.check_files_dotnet.outputs.files_exists == 'true'
+#         uses: microsoft/setup-msbuild@v1.0.2
 
       - name: Check file existence for Dockerfile
         id: check_files_docker
@@ -204,11 +209,11 @@ jobs:
         if: steps.check_files_python_test.outputs.files_exists == 'true'
         run: python -m unittest discover tests
       
-      # - name: Run .Net test with .Net CLI
-      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
-      #   run: dotnet test --settings coverlet.runsettings --logger:trx
-      #   env:
-      #     ASPNETCORE_ENVIRONMENT: Development
+#       - name: Run .Net test with .Net CLI
+#         if: steps.check_files_dotnet.outputs.files_exists == 'true'
+#         run: dotnet test --settings coverlet.runsettings --logger:trx
+#         env:
+#           ASPNETCORE_ENVIRONMENT: Development
 
       - name: Archive production artifacts
         if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
@@ -228,51 +233,51 @@ jobs:
           retention-days: 5
     
     #Enable only when Sonar server is available. It will run Static Code Analysis
-      # - name: Run Sonar Scan - Nodejs
-      #   if: steps.check_files_nodejs.outputs.files_exists == 'true'
-      #   uses: sonarsource/sonarqube-scan-action@master
-      #   with:
-      #     projectBaseDir: .
-      #     args: >
-      #       -Dsonar.projectName=${{ inputs.repo_name }}
-      #       -Dsonar.projectVersion=1.0.0
-      #       -Dsonar.verbose=true
-      #       -Dsonar.projectKey=${{ inputs.repo_name }}
-      #   env:
-      #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #    SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: Run Sonar Scan - Nodejs
+        if: steps.check_files_nodejs.outputs.files_exists == 'true'
+        uses: sonarsource/sonarqube-scan-action@master
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.projectName=${{ inputs.repo_name }}
+            -Dsonar.projectVersion=1.0.0
+            -Dsonar.verbose=true
+            -Dsonar.projectKey=${{ inputs.repo_name }}
+        env:
+         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      # - name: Run Sonar Scan - Python
-      #   if: steps.check_files_python.outputs.files_exists == 'true'
-      #   uses: sonarsource/sonarqube-scan-action@master
-      #   with:
-      #     projectBaseDir: .
-      #     args: >
-      #       -Dsonar.python.coverage.reportPaths=coverage.xml
-      #       -Dsonar.verbose=true
-      #       -Dsonar.projectKey=${{ inputs.repo_name }}
-      #       -Dsonar.sources=.
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: Run Sonar Scan - Python
+        if: steps.check_files_python.outputs.files_exists == 'true'
+        uses: sonarsource/sonarqube-scan-action@master
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.verbose=true
+            -Dsonar.projectKey=${{ inputs.repo_name }}
+            -Dsonar.sources=.
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
-      # - name: SonarScanner for .NET
-      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
-      #   uses: submittable/sonarscan-dotnet@v2.1.2
-      #   with:
-      #     # The key of the SonarQube project
-      #     sonarProjectKey: ${{ inputs.repo_name }}
-      #     # The name of the SonarQube project
-      #     sonarProjectName:  ${{ inputs.repo_name }}
-      #     # Optional command arguments to dotnet build
-      #     dotnetBuildArguments: ./${{ inputs.dotnetbuildarguments }}
-      #     # Optional. Set to 1 or true to not run 'dotnet test' command
-      #     dotnetDisableTests: true
-      #     # The SonarQube server URL. For SonarCloud, skip this setting.
-      #     sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: SonarScanner for .NET
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        uses: submittable/sonarscan-dotnet@v2.1.2
+        with:
+          # The key of the SonarQube project
+          sonarProjectKey: ${{ inputs.repo_name }}
+          # The name of the SonarQube project
+          sonarProjectName:  ${{ inputs.repo_name }}
+          # Optional command arguments to dotnet build
+          dotnetBuildArguments: ./${{ inputs.dotnetbuildarguments }}
+          # Optional. Set to 1 or true to not run 'dotnet test' command
+          dotnetDisableTests: true
+          # The SonarQube server URL. For SonarCloud, skip this setting.
+          sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       # Reads the latest tag on the repo and increments its minor verions
       # Increment style can be changed by including a #major, #minor, or #patch in a commit message
@@ -295,7 +300,7 @@ jobs:
       
       # Collate the image name, tags, and labels for push command
       - name: Extract metadata (tags, labels)
-        if: steps.check_files_docker.outputs.files_exists == 'true'
+#         if: steps.check_files_docker.outputs.files_exists == 'true'
         id: meta
         uses: docker/metadata-action@v3.5.0
         with:
@@ -308,13 +313,14 @@ jobs:
       
       # Build, Tag and Push the docker image to Github Container Registry
       - name: Build, Tag and Push Docker Image
-        if: steps.check_files_docker.outputs.files_exists == 'true'
+#         if: steps.check_files_docker.outputs.files_exists == 'true'
         uses: docker/build-push-action@v2.7.0
         with:
           context: ${{ inputs.context }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+#           file: ${{ inputs.file }}
       
       # Creates a Github release with the new semantic version
       - name: Create a GitHub Semantic release
