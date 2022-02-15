@@ -5,17 +5,17 @@ on:
     inputs:
       sonar-python:
         description: Whether to Scan code using SonarQube
-        required: true
+        required: false
         type: string
         default: 'false'
       sonar-nodejs:
         description: Whether to Scan code using SonarQube
-        required: true
+        required: false
         type: string
         default: 'false'
       sonar-dotnet:
         description: Whether to Scan code using SonarQube
-        required: true
+        required: false
         type: string
         default: 'false'
       dotnetbuildarguments:
