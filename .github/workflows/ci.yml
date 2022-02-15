@@ -5,17 +5,14 @@ on:
     inputs:
       sonar-python:
         description: Whether to Scan code using SonarQube
-        type: string
         required: true
         default: false
       sonar-nodejs:
         description: Whether to Scan code using SonarQube
-        type: string
         required: true
         default: false
       sonar-dotnet:
         description: Whether to Scan code using SonarQube
-        type: string
         required: true
         default: false
       dotnetbuildarguments:
@@ -259,7 +256,7 @@ jobs:
     
     #Enable only when Sonar server is available. It will run Static Code Analysis
       - name: Run Sonar Scan - Nodejs
-        if: inputs.sonar-nodejs == 'true'
+        if: ${{ github.event.inputs.sonar-nodejs == 'true' }}
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
@@ -273,7 +270,7 @@ jobs:
          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: Run Sonar Scan - Python
-        if: inputs.sonar-python == 'true'
+        if: ${{ github.event.inputs.sonar-python == 'true' }}
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
@@ -287,7 +284,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
       - name: SonarScanner for .NET
-        if: inputs.sonar-dotnet == 'true'
+        if: ${{ github.event.inputs.sonar-dotnet == 'true' }}
         uses: submittable/sonarscan-dotnet@v2.1.2
         with:
           # The key of the SonarQube project
