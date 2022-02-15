@@ -3,6 +3,21 @@ name: Test, Sonar Scan and Docker Build-Push Workflow
 on:
   workflow_call:
     inputs:
+      sonar-python:
+        description: Whether to Scan code using SonarQube
+        required: true
+        type: string
+        default: 'false'
+      sonar-nodejs:
+        description: Whether to Scan code using SonarQube
+        required: true
+        type: string
+        default: 'false'
+      sonar-dotnet:
+        description: Whether to Scan code using SonarQube
+        required: true
+        type: string
+        default: 'false'
       dotnetbuildarguments:
         description: 'Optional command arguments to dotnet build'
         default: 'nofile'
@@ -54,11 +69,11 @@ on:
       image_name:
         required: true
         type: string
-#       file:
-#         description: 'adds the path to the dockerfile ./Dockerfile or root Dockerfile'
-#         default: 'Dockerfile'
-#         required: false
-#         type: string
+      file:
+        description: 'adds the path to the dockerfile ./Dockerfile or root Dockerfile'
+        default: 'Dockerfile'
+        required: false
+        type: string
       context:
         description: 'adds the context path to the dockerfile'
         default: '.'
@@ -76,11 +91,21 @@ jobs:
   build:
 
     runs-on: self-hosted
+    env:
+      SonarDotNet: ${{ inputs.sonar-dotnet }}
+      SonarPython: ${{ inputs.sonar-python }}
+      SonarNodeJS: ${{ inputs.sonar-nodejs }}
 
     steps:
 
       - name: ✅🎉Universal Reusable Workflow 2.0 started✅🎉
         run: echo Universal Reusable Workflow 2.0 started!
+
+      - name: Check for SonarScan value
+        run: |
+          echo "Sonar-Nodejs value is: $SonarNodeJS"
+          echo "Sonar-Python value is: $SonarPython"
+          echo "Sonar-DotNet value is: $SonarDotNet"
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -235,7 +260,7 @@ jobs:
     
     #Enable only when Sonar server is available. It will run Static Code Analysis
       - name: Run Sonar Scan - Nodejs
-        if: steps.check_files_nodejs.outputs.files_exists == 'true'
+        if: ${{ inputs.sonar-nodejs == 'true' }}
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
@@ -249,7 +274,7 @@ jobs:
          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: Run Sonar Scan - Python
-        if: steps.check_files_python.outputs.files_exists == 'true'
+        if: ${{ inputs.sonar-python == 'true' }}
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
@@ -263,7 +288,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
       - name: SonarScanner for .NET
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        if: ${{ inputs.sonar-dotnet == 'true' }}
         uses: submittable/sonarscan-dotnet@v2.1.2
         with:
           # The key of the SonarQube project
@@ -321,7 +346,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-#           file: ${{ inputs.file }}
+          file: ${{ inputs.file }}
       
       # Creates a Github release with the new semantic version
       - name: Create a GitHub Semantic release
