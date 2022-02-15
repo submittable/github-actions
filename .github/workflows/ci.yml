@@ -6,15 +6,15 @@ on:
       sonar-python:
         description: Whether to Scan code using SonarQube
         required: true
-        default: false
+        default: "false"
       sonar-nodejs:
         description: Whether to Scan code using SonarQube
         required: true
-        default: false
+        default: "false"
       sonar-dotnet:
         description: Whether to Scan code using SonarQube
         required: true
-        default: false
+        default: "false"
       dotnetbuildarguments:
         description: 'Optional command arguments to dotnet build'
         default: 'nofile'
