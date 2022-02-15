@@ -31,7 +31,7 @@ jobs:
       ######################################################################
       ########## ENABLE OR DISABLE SONAR SCAN. Default is "false" ##############################
         sonar-python: false
-        sonar-dotnet: false 
+        sonar-dotnet: false
         sonar-nodejs: false
       ##########FOR .NET SONAR SCAN ONLY##################
         dotnetbuildarguments: 'src/Submittable.Api' #Set the path to dotnet build for SonarQube

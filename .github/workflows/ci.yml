@@ -92,9 +92,9 @@ jobs:
 
     runs-on: self-hosted
     env:
-      Sonar-DotNet: ${{ github.event.inputs.sonar-dotnet }}
-      Sonar-Python: ${{ github.event.inputs.sonar-python }}
-      Sonar-NodeJS: ${{ github.event.inputs.sonar-nodejs }}
+      SonarDotNet: ${{ github.event.inputs.sonar-dotnet }}
+      SonarPython: ${{ github.event.inputs.sonar-python }}
+      SonarNodeJS: ${{ github.event.inputs.sonar-nodejs }}
 
     steps:
 
@@ -103,9 +103,9 @@ jobs:
 
       - name: Check for SonarScan value
         run: |
-          echo "Sonar-Nodejs value is: $Sonar-NodeJS"
-          echo "Sonar-Python value is: $Sonar-Python"
-          echo "Sonar-DotNet value is: $Sonar-DotNet"
+          echo "Sonar-Nodejs value is: $SonarNodeJS"
+          echo "Sonar-Python value is: $SonarPython"
+          echo "Sonar-DotNet value is: $SonarDotNet"
 
       - name: Checkout
         uses: actions/checkout@v2
