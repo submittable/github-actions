@@ -29,13 +29,17 @@ jobs:
         file_check_path_nodejs_test: "nofile" #CHANGE this to the location of your test file for python ex: package.json or /src/package.json
         file_check_path_python_test: "nofile" #CHANGE this to the location of your test file for python ex: requirement.txt or /Source/requirement.txt
       ######################################################################
+      ########## ENABLE OR DISABLE SONAR SCAN. Default is "false" ##############################
+        sonar-python: false
+        sonar-dotnet: false 
+        sonar-nodejs: false
       ##########FOR .NET SONAR SCAN ONLY##################
         dotnetbuildarguments: 'src/Submittable.Api' #Set the path to dotnet build for SonarQube
       ###############################################
         repo_name: submittable-test-python-repo #CHANGE this to the name of the project
         image_name: ${{ github.repository }}
         context: . #CHANGE this value to the appropriate location of your dockerfile eg ./project/ default is "." for root directory
-#         file: 'Dockerfile' #CHANGE this value to the appropriate location of your dockerfile eg ./project/Dockerfile default is "." for root directory
+        file: 'Dockerfile' #CHANGE this value to the appropriate location of your dockerfile eg project/Dockerfile default is "Dockerfile" for dockerfile liviing in root directory
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
