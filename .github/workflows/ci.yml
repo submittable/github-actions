@@ -259,7 +259,7 @@ jobs:
     
     #Enable only when Sonar server is available. It will run Static Code Analysis
       - name: Run Sonar Scan - Nodejs
-        if: github.event.inputs.sonar-nodejs == 'true'
+        if: ${{ inputs.sonar-nodejs }} == 'true'
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
@@ -273,7 +273,7 @@ jobs:
          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: Run Sonar Scan - Python
-        if: github.event.inputs.sonar-python == 'true'
+        if: ${{ inputs.sonar-python }} == 'true'
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
@@ -287,7 +287,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
       - name: SonarScanner for .NET
-        if: github.event.inputs.sonar-dotnet == 'true'
+        if: ${{ inputs.sonar-dotnet }} == 'true'
         uses: submittable/sonarscan-dotnet@v2.1.2
         with:
           # The key of the SonarQube project
