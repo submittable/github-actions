@@ -1,0 +1,53 @@
+#This workflow is for multi-projects living in the same repo.
+#For this example, we use the fund-distribution project (.Net), however this example can be be used with any project (NodeJS, Python etc).
+name: funds-distribution-payment-processing
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  
+  #Run Tests, Sonar Scans, Build and Publish Docker Image
+  funds-distribution:
+      uses: submittable/github-actions/.github/workflows/ci.yml@main
+      with:
+        file_check_path_dotnet: "FundsDistribution.sln"
+        dotnetbuildarguments: 'FundsDistribution/FundsDistribution.Api.csproj'
+        repo_name: funds-distribution #CHANGE this to the name of the project
+        image_name: ${{ github.repository }}
+        context: .
+        file: FundsDistribution/Dockerfile
+      ########## ENABLE OR DISABLE SONAR SCAN. Default is "false" ##############################
+        sonar-dotnet: false
+      ################Custom Tagging###################
+        tag_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+        release_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+      secrets:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  funds-distribution-payment-processing:
+      needs: funds-distribution
+      uses: submittable/github-actions/.github/workflows/ci.yml@main
+      with:
+        file_check_path_dotnet: "FundsDistribution.sln"
+        dotnetbuildarguments: 'FundsDistribution.PaymentProcessingService/FundsDistribution.PaymentProcessingService.csproj'
+        repo_name: funds-distribution-payment-processing #CHANGE this to the name of the project
+        image_name: submittable/funds-distribution-payment-processing
+        context: . #CHANGE this value to the appropriate location of your dockerfile eg ./project default is "." for root directory
+        file: FundsDistribution.PaymentProcessingService/Dockerfile
+      ########## ENABLE OR DISABLE SONAR SCAN. Default is "false" ##############################
+        sonar-dotnet: false
+      ################Custom Tagging###################
+        tag_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+        release_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+      secrets:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

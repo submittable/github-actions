@@ -76,3 +76,7 @@
 
 2. Click on ```Run workflow``` drop down menu and choose which branch you want to run manually
 ![image](./pictures/manual-run2.png)
+
+## ⚙️⚙️Multi-Project Build
+For Multi-project build, see example at [here](./caller-examples/multi-pipeline-example-workflow.yml)
+This example is for more than one project that is living in the same repo. The only difference from this workflow and the universal-ci-caller.yml is that it builds more than one project in a chronological order while implementing the respective Docker tags and SemVer for each build. Example of successful build can be found [here](https://github.com/submittable/funds-distribution-tool/actions/runs/1849806579)
