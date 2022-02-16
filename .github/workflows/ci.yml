@@ -3,6 +3,16 @@ name: Test, Sonar Scan and Docker Build-Push Workflow
 on:
   workflow_call:
     inputs:
+      release_name:
+        description: Set release name
+        required: false
+        type: string
+        default: "${{ steps.tag_version.outputs.new_tag }}"
+      tag_name:
+        description: Set tag name
+        required: false
+        type: string
+        default: "${{ steps.tag_version.outputs.new_tag }}"
       sonar-python:
         description: Whether to Scan code using SonarQube
         required: false
@@ -356,8 +366,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.tag_version.outputs.new_tag }}
-          release_name: ${{ steps.tag_version.outputs.new_tag }}
+          tag_name: ${{ inputs.tag_name }}
+          release_name: ${{ inputs.release_name }}
           body: ${{ steps.tag_version.outputs.changelog }}
 
       # - name: Update Image
