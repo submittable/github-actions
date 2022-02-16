@@ -360,7 +360,7 @@ jobs:
       
       # Creates a Github release with the new semantic version
       - name: Create a GitHub Semantic release
-        if: endsWith(GitHub.ref, 'main') && success()
+        # if: endsWith(GitHub.ref, 'main') && success()
         # if: ${{ success() && (github.ref == 'refs/heads/main' || github.base_ref == 'main') }}
         uses: actions/create-release@v1.1.4
         env:
