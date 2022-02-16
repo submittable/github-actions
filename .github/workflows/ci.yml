@@ -366,8 +366,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ inputs.tag_name }}-${{ steps.tag_version.outputs.new_tag }}
-          release_name: ${{ inputs.release_name }}-${{ steps.tag_version.outputs.new_tag }}
+          tag_name: ${{ inputs.tag_name }}${{ steps.tag_version.outputs.new_tag }}
+          release_name: ${{ inputs.release_name }}${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
 
       # - name: Update Image
