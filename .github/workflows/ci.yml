@@ -117,7 +117,14 @@ jobs:
         with:
           # Disabling shallow clone is recommended for improving relevancy of sonarqube reporting
           fetch-depth: 0
-      
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       
@@ -126,13 +133,6 @@ jobs:
         with:
           driver: docker
       
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1.10.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Check file existence for Nodejs
         id: check_files_nodejs
         uses: submittable/file-existence-action@v1
