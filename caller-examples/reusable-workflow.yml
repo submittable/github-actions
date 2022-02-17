@@ -33,9 +33,11 @@ jobs:
         sonar-python: false
         sonar-dotnet: false
         sonar-nodejs: false
+      ################Enable Semantic Release###################
+        sem-release: false
       ################Custom Tagging###################
-        tag_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
-        release_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+        # tag_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+        # release_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
       ##########FOR .NET SONAR SCAN ONLY##################
         dotnetbuildarguments: 'src/Submittable.Api' #Set the path to dotnet build for SonarQube. See https://github.com/submittable/funds-distribution-tool
       ###############################################

@@ -26,8 +26,10 @@ jobs:
       ########## ENABLE OR DISABLE SONAR SCAN. Default is "false" ##############################
         sonar-dotnet: false
       ################Custom Tagging###################
-        tag_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
-        release_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+        # tag_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+        # release_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+      ################Enable Semantic Release###################
+        sem-release: false
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -45,8 +47,10 @@ jobs:
       ########## ENABLE OR DISABLE SONAR SCAN. Default is "false" ##############################
         sonar-dotnet: false
       ################Custom Tagging###################
-        tag_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
-        release_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+        # tag_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+        # release_name: v #Set this to the initials of the project, default is v. See https://github.com/submittable/funds-distribution-tool
+      ################Enable Semantic Release###################
+        sem-release: false
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

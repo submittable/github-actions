@@ -3,21 +3,11 @@ name: Test, Sonar Scan and Docker Build-Push Workflow
 on:
   workflow_call:
     inputs:
-      with_v:
-        description: Add "v" to the tag_name
+      sem-release:
+        description: Whether to run a semantic release
         required: false
         type: string
         default: 'false'
-      release_name:
-        description: Set custom release name
-        required: false
-        type: string
-        default: 'v'
-      tag_name:
-        description: Set custom tag name
-        required: false
-        type: string
-        default: 'v'
       sonar-python:
         description: Whether to Scan code using SonarQube
         required: false
@@ -328,7 +318,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCHES: main
-          WITH_V: ${{ inputs.with_v }}
+          WITH_V: false
           #INITIAL_VERSION: 0.0.0 #Set initial version before bump. Default is 0.0.0
       
       # Attempt to make the REF string valid docker tag syntax
@@ -365,14 +355,15 @@ jobs:
       
       # Creates a Github release with the new semantic version
       - name: Create a GitHub Semantic release
+        if: ${{ inputs.sem-release == 'true' }}
         # if: endsWith(GitHub.ref, 'main') && success()
         # if: ${{ success() && (github.ref == 'refs/heads/main' || github.base_ref == 'main') }}
         uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ inputs.tag_name }}${{ steps.tag_version.outputs.new_tag }}
-          release_name: ${{ inputs.release_name }}${{ steps.tag_version.outputs.new_tag }}
+          tag_name: ${{ steps.tag_version.outputs.new_tag }}
+          release_name: ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
 
       # - name: Update Image
@@ -383,7 +374,7 @@ jobs:
         uses: submittable/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: Build job for Release ${{ inputs.tag_name }}${{ steps.tag_version.outputs.new_tag }} completed successfully!
+          SLACK_MESSAGE: Build job for Release ${{ steps.tag_version.outputs.new_tag }} completed successfully!
           SLACK_FOOTER: Powered By Submittable GitHub Actions Library
       
       # Sends a slack notification to slack build channel if Dockerfile is not present
@@ -393,7 +384,7 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: #fff00
-          SLACK_MESSAGE: Dockerfile not found for ${{ inputs.tag_name }}${{ steps.tag_version.outputs.new_tag }} - will continue build.
+          SLACK_MESSAGE: Dockerfile not found for ${{ steps.tag_version.outputs.new_tag }} - will continue build.
           SLACK_FOOTER: Powered By Submittable GitHub Actions Library
 
       # Sends a slack notification to slack build channel on Failure
@@ -403,5 +394,5 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: Build job for Release ${{ inputs.tag_name }}${{ steps.tag_version.outputs.new_tag }} FAILED!
+          SLACK_MESSAGE: Build job for Release ${{ steps.tag_version.outputs.new_tag }} FAILED!
           SLACK_FOOTER: Powered By Submittable GitHub Actions Library
