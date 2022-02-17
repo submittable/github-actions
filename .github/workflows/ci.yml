@@ -7,7 +7,7 @@ on:
         description: Whether to run a semantic release
         required: false
         type: string
-        default: 'false'
+        default: 'true'
       sonar-python:
         description: Whether to Scan code using SonarQube
         required: false
