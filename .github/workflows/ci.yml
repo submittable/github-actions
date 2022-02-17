@@ -318,7 +318,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCHES: main
-          WITH_V: false
+          WITH_V: true
           #INITIAL_VERSION: 0.0.0 #Set initial version before bump. Default is 0.0.0
       
       # Attempt to make the REF string valid docker tag syntax
