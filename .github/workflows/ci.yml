@@ -383,7 +383,7 @@ jobs:
         uses: submittable/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: Build job for Release ${{ steps.tag_version.outputs.new_tag }} completed successfully!
+          SLACK_MESSAGE: Build job for Release ${{ inputs.tag_name }}${{ steps.tag_version.outputs.new_tag }} completed successfully!
           SLACK_FOOTER: Powered By Submittable GitHub Actions Library
       
       # Sends a slack notification to slack build channel if Dockerfile is not present
@@ -393,7 +393,7 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: #fff00
-          SLACK_MESSAGE: Dockerfile not found for ${{ steps.tag_version.outputs.new_tag }} - will continue build.
+          SLACK_MESSAGE: Dockerfile not found for ${{ inputs.tag_name }}${{ steps.tag_version.outputs.new_tag }} - will continue build.
           SLACK_FOOTER: Powered By Submittable GitHub Actions Library
 
       # Sends a slack notification to slack build channel on Failure
@@ -403,5 +403,5 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: Build job for Release ${{ steps.tag_version.outputs.new_tag }} FAILED!
+          SLACK_MESSAGE: Build job for Release ${{ inputs.tag_name }}${{ steps.tag_version.outputs.new_tag }} FAILED!
           SLACK_FOOTER: Powered By Submittable GitHub Actions Library
