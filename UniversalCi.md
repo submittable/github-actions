@@ -53,9 +53,9 @@
 
 1. Create folder ```.github/workflows``` in the root directory of your repo
 
-2. Create file ```ci.yml``` and copy code from ```caller-examples/universal-ci-caller.yml``` and save.
+2. Create file ```ci.yml``` and copy code from ```caller-examples/reusable-workflow.yml``` and save.
 
-3. Edit file ```ci.yml``` and change ```repo_name``` value in line 19 of ```ci.yml``` file to the project name. This will be consumed by Sonar scanner
+3. Edit file ```ci.yml``` and change ```repo_name``` value in line 19 of ```ci.yml``` file to the project name. You can clean up any parameters you will not use at this time. This will be consumed by Sonar scanner
 
 4. Save and Create PR
 
