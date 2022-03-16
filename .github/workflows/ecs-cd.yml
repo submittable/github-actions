@@ -42,7 +42,7 @@ on:
 
 jobs:
   ecs_deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
 
       - name: ✅🎉Reusable ECS Image Deploy Workflow started✅🎉
