@@ -34,7 +34,7 @@ jobs:
       - name: Configure Azure credentials
         uses: azure/login@v1
         with:
--         creds: ${{ env.AZURE_CREDENTIALS }}
+          creds: ${{ env.AZURE_CREDENTIALS }}
 
       # Checkout repo files
       - name: Checkout
