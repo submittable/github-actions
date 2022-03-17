@@ -1,0 +1,84 @@
+name: Deploy Terraform to Azure
+#TODO Review all input references and secrets
+on:
+  workflow_call:
+    inputs:
+      tf_root_folder:
+        required: true
+        description: 'The directory to execute terraform cmds from, eg terraform/environment/common'
+        type: string
+    secrets:
+      ARM_CLIENT_ID:
+        required: true
+      ARM_CLIENT_SECRET:
+        required: true
+      ARM_SUBSCRIPTION_ID:
+        required: true
+      ARM_TENANT_ID:
+        required: true
+
+env:
+  AZURE_CREDENTIALS: '{"clientId":"${{ secrets.ARM_CLIENT_ID }}", "clientSecret":"${{ secrets.ARM_CLIENT_SECRET }}", "subscriptionId":"${{ secrets.ARM_SUBSCRIPTION_ID }}", "tenantId":"${{ secrets.ARM_TENANT_ID }}"}' 
+
+jobs:
+  terraform_deploy:
+    runs-on: self-hosted
+    outputs:
+      prefix: ${{ steps.test.outputs.PREFIX }}
+    steps:
+
+      - name: ✅🎉Reusable Terraform Deploy Workflow started✅🎉
+        run: echo Reusable Terraform Workflow started
+
+      # Auth with Azure
+      - name: Configure Azure credentials
+        uses: azure/login@v1
+        with:
+-         creds: ${{ env.AZURE_CREDENTIALS }}
+
+      # Checkout repo files
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Setup Agent for Terraform ( TODO Version Var)
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.1.6
+          terraform_wrapper: false
+          # https://stackoverflow.com/questions/65170927/terraform-output-value-failed-formatted-by-jq-in-github-actions
+          
+      # TODO ADD DESTROY STEP
+      
+
+      - name: Apply Terraform Stack
+        #if: ${{ github.event.inputs.destroy != 'true' }}
+        run: |
+          pwd
+          cd ${{ inputs.tf_root_folder }}
+          configuration_folder=configuration
+          parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
+          terraform init -upgrade
+          eval terraform apply ${parameter_files} -var 'tags={workflow_id="${{ github.run_id }}"}' -auto-approve
+
+
+      # TODO ADD Pattern for TEST Step
+
+      # Sends a slack notification to slack build channel on failure
+      # - name: Report Failure to Slack
+      #  if: ${{ failure() }}
+      #  uses: submittable/action-slack-notify@v2.2.0
+      #  env:
+      #    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      #    SLACK_MESSAGE: Failure - Terraform Deployment ${{ inputs.image_tag }} to Environment ${{ inputs.environment }}.
+      #    SLACK_COLOR: ${{ job.status }}
+      #    SLACK_FOOTER: Powered By Submittable GitHub Actions Library
+
+      # Sends a slack notification to slack build channel
+      - name: Report Success to Slack
+        if: ${{ success() }}
+        uses: submittable/action-slack-notify@v2.2.0
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: Success - ECS Deployment of Image ${{ inputs.image_tag }} to Environment ${{ inputs.environment }}.
+          SLACK_FOOTER: Powered By Submittable GitHub Actions Library
