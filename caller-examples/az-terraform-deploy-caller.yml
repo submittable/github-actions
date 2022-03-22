@@ -1,0 +1,64 @@
+name: FooBar Azure Terraform Deployment
+
+# Manual only pipeline
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: 'The Azure environment to deploy to'
+        required: true
+        options:
+        - sandbox
+        - dev
+        - staging
+        - prod
+
+jobs:
+  sandbox_deploy:
+    uses: submittable/github-actions/.github/workflows/az-terraform-cd.yml@main
+    if: ${{ github.event.inputs.environment == 'sandbox' }}
+    with:
+      tf_root_folder: "terraform/sandbox/common"
+    secrets:
+      SLACK_WEBHOOK: ${{ secrets.BUILDS_SLACK_WEBHOOK }}
+      ARM_CLIENT_ID: ${{ secrets.SANDBOX_ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.SANDBOX_ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.SANDBOX_ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.SANDBOX_ARM_TENANT_ID }}
+
+  dev_deploy:
+    uses: submittable/github-actions/.github/workflows/az-terraform-cd.yml@main
+    if: ${{ github.event.inputs.environment == 'dev' }}
+    with:
+      tf_root_folder: "terraform/dev/common"
+    secrets:
+      SLACK_WEBHOOK: ${{ secrets.BUILDS_SLACK_WEBHOOK }}
+      ARM_CLIENT_ID: ${{ secrets.DEVELOPMENT_ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.DEVELOPMENT_ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.DEVELOPMENT_ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.DEVELOPMENT_ARM_TENANT_ID }}
+
+  staging_deploy:
+    uses: submittable/github-actions/.github/workflows/az-terraform-cd.yml@main
+    if: ${{ github.event.inputs.environment == 'staging' }}
+    with:
+      tf_root_folder: "terraform/staging/common"
+    secrets:
+      SLACK_WEBHOOK: ${{ secrets.BUILDS_SLACK_WEBHOOK }}
+      ARM_CLIENT_ID: ${{ secrets.STAGING_ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.STAGING_ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.STAGING_ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.STAGING_ARM_TENANT_ID }}
+
+  production_deploy:
+    uses: submittable/github-actions/.github/workflows/az-terraform-cd.yml@main
+    if: ${{ github.event.inputs.environment == 'prod' }}
+    with:
+      tf_root_folder: "terraform/prod/common"
+    secrets:
+      SLACK_WEBHOOK: ${{ secrets.BUILDS_SLACK_WEBHOOK }}
+      ARM_CLIENT_ID: ${{ secrets.PRODUCTION_ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.PRODUCTION_ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.PRODUCTION_ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.PRODUCTION_ARM_TENANT_ID }}
