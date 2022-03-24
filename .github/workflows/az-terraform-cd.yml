@@ -8,7 +8,7 @@ on:
         description: 'The directory to execute terraform cmds from, eg terraform/environment/team/product'
         type: string
       destroy:
-        required: true
+        required: false
         description: 'Destroy instead of apply'
         default: false
         type: boolean
