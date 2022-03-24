@@ -59,7 +59,7 @@ jobs:
           terraform_wrapper: false
           # https://stackoverflow.com/questions/65170927/terraform-output-value-failed-formatted-by-jq-in-github-actions
           
-      - name: Apply Terraform Stack
+      - name: Destroy Terraform Stack
         if: ${{ github.event.inputs.destroy == 'true' }}
         run: |
           pwd
