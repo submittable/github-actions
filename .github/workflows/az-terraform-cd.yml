@@ -1,5 +1,4 @@
 name: Deploy Terraform to Azure
-#TODO Review all input references and secrets
 on:
   workflow_call:
     inputs:
