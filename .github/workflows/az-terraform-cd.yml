@@ -7,6 +7,11 @@ on:
         required: true
         description: 'The directory to execute terraform cmds from, eg terraform/environment/team/product'
         type: string
+      destroy:
+        required: true
+        description: 'Destroy instead of apply'
+        default: false
+        type: boolean
     secrets:
       ARM_CLIENT_ID:
         required: true
@@ -54,11 +59,19 @@ jobs:
           terraform_wrapper: false
           # https://stackoverflow.com/questions/65170927/terraform-output-value-failed-formatted-by-jq-in-github-actions
           
-      # TODO ADD DESTROY STEP
+      - name: Apply Terraform Stack
+        if: ${{ github.event.inputs.destroy == 'true' }}
+        run: |
+          pwd
+          cd ${{ inputs.tf_root_folder }}
+          configuration_folder=configuration
+          parameter_files=$(find $configuration_folder | grep .tfvars | sed 's/.*/-var-file &/' | xargs)
+          terraform init -upgrade
+          eval terraform apply ${parameter_files} -destroy -auto-approve
       
 
       - name: Apply Terraform Stack
-        #if: ${{ github.event.inputs.destroy != 'true' }}
+        if: ${{ github.event.inputs.destroy != 'true' }}
         run: |
           pwd
           cd ${{ inputs.tf_root_folder }}
