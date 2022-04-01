@@ -32,7 +32,7 @@ env:
 
 jobs:
   terraform_deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       prefix: ${{ steps.test.outputs.PREFIX }}
     steps:
