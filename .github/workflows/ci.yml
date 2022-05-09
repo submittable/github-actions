@@ -71,6 +71,9 @@ on:
       repo_name:
         required: true
         type: string
+      branch_name:
+        required: true
+        type: string
       image_name:
         required: true
         type: string
