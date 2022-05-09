@@ -282,6 +282,7 @@ jobs:
          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: Run Sonar Scan - Python
+        run: echo SONAR_HOST_URL - ${{ secrets.SONAR_HOST_URL }}
         if: ${{ inputs.sonar-python == 'true' }}
         uses: sonarsource/sonarqube-scan-action@master
         with:
