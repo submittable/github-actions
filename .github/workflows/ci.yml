@@ -288,8 +288,18 @@ jobs:
           name: code-coverage-report
           path: output/test/code-coverage.html
           retention-days: 5
+      
+      # We need to set the proxy for SDM so we can access websites
+      - name: Set proxy for SDM
+        run: |
+          export HTTP_PROXY="http://localhost:65230"
+          env | grep PROXY
+          curl -k -x localhost:65230 $SONAR_HOST_URL
+        shell: sh
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
     
-    #Enable only when Sonar server is available. It will run Static Code Analysis
+      # Enable only when Sonar server is available. It will run Static Code Analysis
       - name: Run Sonar Scan - Nodejs
         if: ${{ inputs.sonar-nodejs == 'true' }}
         uses: sonarsource/sonarqube-scan-action@master
