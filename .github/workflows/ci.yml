@@ -98,7 +98,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest # self-hosted
+    runs-on: [self-hosted, linux] # ubuntu-latest
     env:
       SonarDotNet: ${{ inputs.sonar-dotnet }}
       SonarPython: ${{ inputs.sonar-python }}
