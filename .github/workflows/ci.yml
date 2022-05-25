@@ -237,7 +237,7 @@ jobs:
       
       - name: Run Python tests
         if: steps.check_files_python_test.outputs.files_exists == 'true'
-        run: python -m pytest --cov-report xml:coverage-reports/coverage.xml --cov . # python -m unittest discover tests
+        run: python -m pytest --cov-report xml:coverage-reports/coverage.xml --cov .
 
       # Build fails running tests, so commenting until we have a working test case
       # - name: Run .Net test with .Net CLI
