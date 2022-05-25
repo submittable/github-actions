@@ -237,7 +237,7 @@ jobs:
       
       - name: Run Python tests
         if: steps.check_files_python_test.outputs.files_exists == 'true'
-        run: python -m unittest discover tests
+        run: python -m pytest --cov-report xml:coverage-reports/coverage.xml --cov .
 
       # Build fails running tests, so commenting until we have a working test case
       # - name: Run .Net test with .Net CLI
@@ -255,12 +255,20 @@ jobs:
             dist
             !dist/**/*.md
 
-      - name: Archive code coverage results
+      - name: Archive code coverage results - Nodejs
         if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
         uses: actions/upload-artifact@v2
         with:
           name: code-coverage-report
           path: output/test/code-coverage.html
+          retention-days: 5
+      
+      - name: Archive code coverage results - Python
+        if: steps.check_files_python_test.outputs.files_exists == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: coverage-reports/coverage.xml
           retention-days: 5
     
       # Enable only when Sonar server is available. It will run Static Code Analysis
@@ -284,10 +292,12 @@ jobs:
         with:
           projectBaseDir: .
           args: >
-            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.python.coverage.reportPaths=coverage-reports/coverage.xml
             -Dsonar.verbose=true
             -Dsonar.projectKey=${{ inputs.repo_name }}
             -Dsonar.sources=.
+            -Dsonar.tests=tests/
+            -Dsonar.exclusions=tests/**
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
