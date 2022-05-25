@@ -255,12 +255,20 @@ jobs:
             dist
             !dist/**/*.md
 
-      - name: Archive code coverage results
+      - name: Archive code coverage results - Nodejs
         if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
         uses: actions/upload-artifact@v2
         with:
           name: code-coverage-report
           path: output/test/code-coverage.html
+          retention-days: 5
+      
+      - name: Archive code coverage results - Python
+        if: steps.check_files_python_test.outputs.files_exists == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: coverage-reports/coverage.xml
           retention-days: 5
     
     #Enable only when Sonar server is available. It will run Static Code Analysis
