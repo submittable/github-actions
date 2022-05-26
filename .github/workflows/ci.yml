@@ -107,7 +107,7 @@ on:
 jobs:
   # 1. Setup the CI workflow with dependencies and project properties
   setup:
-    name: Setup the CI workflow
+    name: Setup Workflow
     runs-on: [self-hosted, linux]
 
     steps:
@@ -158,7 +158,7 @@ jobs:
 
   # 2. Run tests and send SonarQube coverage report
   test:
-    name: Run tests and SonarQube scan
+    name: Run Tests
     runs-on: [self-hosted, linux]
     env:
       SonarDotNet: ${{ inputs.sonar-dotnet }}
@@ -175,7 +175,7 @@ jobs:
 
   # 3. Build the Docker container and publish
   build:
-    name: Build and publish the container
+    name: Build Container
     runs-on: [self-hosted, linux]
     needs: [setup, test]
 
