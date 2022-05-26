@@ -4,18 +4,28 @@ on:
   workflow_call:
     inputs:
       # General project properties
-      sem-release:
-        description: Whether to run a semantic release
-        required: false
-        type: string
-        default: 'true'
       repo_name:
         required: true
         type: string
       image_name:
         required: true
         type: string
-      
+      sem-release:
+        description: Whether to run a semantic release
+        required: false
+        type: string
+        default: 'true'
+      file:
+        description: 'Adds the path to the dockerfile ./Dockerfile or root Dockerfile'
+        default: 'Dockerfile'
+        required: false
+        type: string
+      context:
+        description: 'Adds the context path to the dockerfile'
+        default: '.'
+        required: false
+        type: string
+
       # Check to enable SonrQube scan for project
       # TODO: Enable this by default but set it to continue on error
       sonar-python:
@@ -86,17 +96,6 @@ on:
         type: string
       # TODO: file_check_path_dotnet_test
       
-      # Identify Docker project properties
-      file:
-        description: 'Adds the path to the dockerfile ./Dockerfile or root Dockerfile'
-        default: 'Dockerfile'
-        required: false
-        type: string
-      context:
-        description: 'Adds the context path to the dockerfile'
-        default: '.'
-        required: false
-        type: string
     secrets:
       SLACK_WEBHOOK:
         required: true
