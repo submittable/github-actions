@@ -17,6 +17,7 @@ on:
         type: string
       
       # Check to enable SonrQube scan for project
+      # TODO: Enable this by default but set it to continue on error
       sonar-python:
         description: Whether to Scan code using SonarQube
         required: false
@@ -75,12 +76,12 @@ on:
       # Identify the location of the unit tests
       file_check_path_python_test:
         description: 'Checks file path to enable python unit test'
-        default: "nofile"
+        default: "tests/*"
         required: false
         type: string
       file_check_path_nodejs_test:
         description: 'Checks file path to enable node unit test'
-        default: "nofile"
+        default: "src/__tests__/*"
         required: false
         type: string
       # TODO: file_check_path_dotnet_test
