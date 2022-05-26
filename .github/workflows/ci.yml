@@ -190,12 +190,15 @@ jobs:
         with:
           files: "Dockerfile"
 
+      # TODO: remove this since we can test and continue on error
+      # Also, we dont need to run this when its a Python/.NET project
       - name: Check file existence for Node Testfiles
         id: check_files_nodejs_test
         uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_nodejs_test }}"
       
+      # TODO: remove this since we can test and continue on error
       - name: Check file existence for Python Testfiles
         id: check_files_python_test
         uses: submittable/file-existence-action@v1
@@ -258,10 +261,12 @@ jobs:
       - name: Run Nodejs tests
         if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
         run: npm test
+        # TODO: Set to continue on error
       
       - name: Run Python tests
         if: steps.check_files_python_test.outputs.files_exists == 'true'
         run: python -m pytest --cov-report xml:coverage-reports/coverage.xml --cov .
+        # TODO: Set to continue on error
 
       # Build fails running tests, so commenting until we have a working test case
       # - name: Run .Net test with .Net CLI
@@ -269,6 +274,7 @@ jobs:
       #   run: dotnet test --settings coverlet.runsettings --logger:trx
       #   env:
       #     ASPNETCORE_ENVIRONMENT: Development
+          # TODO: Set to continue on error
 
       - name: Archive production artifacts
         if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
