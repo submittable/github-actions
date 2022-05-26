@@ -3,11 +3,20 @@ name: Submittable CI Workflow
 on:
   workflow_call:
     inputs:
+      # General project properties
       sem-release:
         description: Whether to run a semantic release
         required: false
         type: string
         default: 'true'
+      repo_name:
+        required: true
+        type: string
+      image_name:
+        required: true
+        type: string
+      
+      # Check to enable SonrQube scan for project
       sonar-python:
         description: Whether to Scan code using SonarQube
         required: false
@@ -28,6 +37,8 @@ on:
         default: 'nofile'
         required: false
         type: string
+      
+      # Identify programming language version for project
       nodejs_version:
         description: 'Sets node version'
         default: '15.x'
@@ -43,6 +54,8 @@ on:
         default: '5.0.x'
         required: false
         type: string
+      
+      # Identify the location of the project unit tests
       file_check_path_nodejs_test:
         description: 'Checks file path to enable node unit test'
         default: "nofile"
@@ -53,6 +66,9 @@ on:
         default: "nofile"
         required: false
         type: string
+      # TODO: file_check_path_dotnet_test
+
+      # Identify which programming language in project
       file_check_path_python:
         description: 'Checks file path to identify as a python pipeline job'
         default: "nofile"
@@ -68,12 +84,8 @@ on:
         default: "nofile"
         required: false
         type: string
-      repo_name:
-        required: true
-        type: string
-      image_name:
-        required: true
-        type: string
+      
+      # Identify Docker project properties
       file:
         description: 'Adds the path to the dockerfile ./Dockerfile or root Dockerfile'
         default: 'Dockerfile'
@@ -95,7 +107,6 @@ on:
 jobs:
   # 1. Setup the CI workflow with dependencies and project properties
   setup:
-
     name: Setup the CI workflow
     runs-on: [self-hosted, linux]
 
@@ -116,6 +127,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
+      # Docker setup
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       
@@ -126,7 +138,6 @@ jobs:
 
   # 2. Run tests and send SonarQube coverage report
   test:
-
     name: Run tests and SonarQube scan
     runs-on: [self-hosted, linux]
     env:
@@ -136,8 +147,7 @@ jobs:
     needs: setup
 
     steps:
-      # Check to see if we want to enable SonrQube scan for project
-      - name: Check for SonarScan value
+      - name: Check to enable SonrQube scan for project
         run: |
           echo "Sonar-Nodejs value is: $SonarNodeJS"
           echo "Sonar-Python value is: $SonarPython"
@@ -145,7 +155,6 @@ jobs:
 
   # 3. Build the Docker container and publish
   build:
-
     name: Build and publish the container
     runs-on: [self-hosted, linux]
     needs: [setup, test]
