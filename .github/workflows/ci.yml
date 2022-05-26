@@ -29,42 +29,42 @@ on:
         required: false
         type: string
       nodejs_version:
-        description: 'sets node version'
+        description: 'Sets node version'
         default: '15.x'
         required: false
         type: string
       python_version:
-        description: 'sets python version'
+        description: 'Sets python version'
         default: '3.6'
         required: false
         type: string
       dotnet_version:
-        description: 'sets .net version for dotnet core application'
+        description: 'Sets .NET version for .NET core application'
         default: '5.0.x'
         required: false
         type: string
       file_check_path_nodejs_test:
-        description: 'checks file path to enable nodejs unit test'
+        description: 'Checks file path to enable node unit test'
         default: "nofile"
         required: false
         type: string
       file_check_path_python_test:
-        description: 'checks file path to enable python unit test'
+        description: 'Checks file path to enable python unit test'
         default: "nofile"
         required: false
         type: string
       file_check_path_python:
-        description: 'checks file path to identify as a python pipeline job'
+        description: 'Checks file path to identify as a python pipeline job'
         default: "nofile"
         required: false
         type: string
       file_check_path_nodejs:
-        description: 'checks file path to identify as a nodejs pipeline job'
+        description: 'Checks file path to identify as a nodejs pipeline job'
         default: "nofile"
         required: false
         type: string
       file_check_path_dotnet:
-        description: 'checks file path to identify as a dotnet pipeline job'
+        description: 'Checks file path to identify as a dotnet pipeline job'
         default: "nofile"
         required: false
         type: string
@@ -75,12 +75,12 @@ on:
         required: true
         type: string
       file:
-        description: 'adds the path to the dockerfile ./Dockerfile or root Dockerfile'
+        description: 'Adds the path to the dockerfile ./Dockerfile or root Dockerfile'
         default: 'Dockerfile'
         required: false
         type: string
       context:
-        description: 'adds the context path to the dockerfile'
+        description: 'Adds the context path to the dockerfile'
         default: '.'
         required: false
         type: string
@@ -93,7 +93,7 @@ on:
         required: true
 
 jobs:
-  # 1. Setup the CI workflow with initial dependencies like login and docker
+  # 1. Setup the CI workflow with dependencies and project properties
   setup:
 
     name: Setup the CI workflow
@@ -127,7 +127,7 @@ jobs:
   # 2. Run tests and send SonarQube coverage report
   test:
 
-    name: Run tests and SonarQube
+    name: Run tests and SonarQube scan
     runs-on: [self-hosted, linux]
     env:
       SonarDotNet: ${{ inputs.sonar-dotnet }}
@@ -136,6 +136,7 @@ jobs:
     needs: setup
 
     steps:
+      # Check to see if we want to enable SonrQube scan for project
       - name: Check for SonarScan value
         run: |
           echo "Sonar-Nodejs value is: $SonarNodeJS"
