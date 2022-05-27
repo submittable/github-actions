@@ -90,7 +90,7 @@ on:
       # Identify the location of the unit tests
       file_check_path_python_test:
         description: 'Checks file path to enable python unit test'
-        default: "tests/test_*.py"
+        default: "tests/__init__.py"
         required: false
         type: string
       file_check_path_nodejs_test:
