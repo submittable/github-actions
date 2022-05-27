@@ -53,7 +53,7 @@ on:
         required: false
         type: string
       
-      # Identify programming language
+      # Identify project
       file_check_path_python:
         description: 'Checks file path to identify as a python pipeline job'
         default: "requirements.txt"
@@ -70,7 +70,7 @@ on:
         required: false
         type: string
       
-      # Identify programming language version
+      # Identify project version
       python_version:
         description: 'Sets python version'
         default: '3.6'
@@ -147,7 +147,7 @@ jobs:
         with:
           driver: docker
       
-      # Identify programming language
+      # Identify project
       - name: Check file existence for Python
         id: check_files_python
         uses: submittable/file-existence-action@v1
@@ -165,6 +165,45 @@ jobs:
         uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_dotnet }}"
+      
+      # Identify project version
+      - name: Set Python Version
+        if: steps.check_files_python.outputs.files_exists == 'true'
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ inputs.python_version }}
+      
+      - name: Set Node Version
+        if: steps.check_files_nodejs.outputs.files_exists == 'true'
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.nodejs_version }}
+        
+      - name: Set .Net Version
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '${{ inputs.dotnet_version }}'
+      
+      - name: Setup Nuget
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        uses: Nuget/setup-nuget@v1.0.5
+      
+      # Install project dependencies
+      - name: Install Python Dependencies
+        if: steps.check_files_python.outputs.files_exists == 'true'
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      - name: Install Nodejs Dependencies
+        if: steps.check_files_nodejs.outputs.files_exists == 'true'
+        run: npm ci
+      
+      - name: Install .Net dependencies
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        run: dotnet restore
 
   # 2. Run tests and send SonarQube coverage report
   test:
@@ -206,43 +245,6 @@ jobs:
         uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_python_test }}"
-
-      - name: Set Node Version
-        if: steps.check_files_nodejs.outputs.files_exists == 'true'
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ inputs.nodejs_version }}
-      
-      - name: Set Python Version
-        if: steps.check_files_python.outputs.files_exists == 'true'
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ inputs.python_version }}
-      
-      - name: Setup DotNet Version
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '${{ inputs.dotnet_version }}'
-      
-      - name: Setup Nuget
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        uses: Nuget/setup-nuget@v1.0.5
-      
-      - name: Install Nodejs Dependencies
-        if: steps.check_files_nodejs.outputs.files_exists == 'true'
-        run: npm ci
-      
-      - name: Install Python Dependencies
-        if: steps.check_files_python.outputs.files_exists == 'true'
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8 pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      
-      - name: Install DotNet dependencies
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        run: dotnet restore
 
       - name: Build Nodejs App
         if: steps.check_files_nodejs.outputs.files_exists == 'true'
