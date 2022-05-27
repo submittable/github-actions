@@ -35,7 +35,6 @@ on:
       # ---------------------------------------------------------
       # Check to enable SonrQube scan for project
       # ---------------------------------------------------------
-      # TODO: Enable this by default but set it to continue on error
       sonar-python:
         description: Whether to Scan code using SonarQube
         default: 'false'
