@@ -117,35 +117,6 @@ jobs:
     steps:
       - name: Submittable CI Workflow started
         run: echo "✅🎉 Submittable CI Workflow started ✅🎉"
-
-      # General setup
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of SonarQube reporting
-          fetch-depth: 0
-      
-      # Setup Docker
-      - name: Check file existence for Dockerfile
-        id: check_files_docker
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "Dockerfile"
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1.10.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          driver: docker
       
       # Identify project
       - name: Check file existence for Python
@@ -209,19 +180,9 @@ jobs:
   test:
     name: Run Tests
     runs-on: [self-hosted, linux]
-    env:
-      SonarDotNet: ${{ inputs.sonar-dotnet }}
-      SonarPython: ${{ inputs.sonar-python }}
-      SonarNodeJS: ${{ inputs.sonar-nodejs }}
     needs: setup
 
     steps:
-      - name: Check to enable SonarQube scan for project
-        run: |
-          echo "Sonar-Nodejs value is: $SonarNodeJS"
-          echo "Sonar-Python value is: $SonarPython"
-          echo "Sonar-DotNet value is: $SonarDotNet"
-      
       # Identify the location of the unit tests
       # TODO: remove this since we can test and continue on error
       - name: Check file existence for Python Testfiles
@@ -335,6 +296,14 @@ jobs:
     needs: [setup, test]
 
     steps:
+      # General setup
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of SonarQube reporting
+          fetch-depth: 0
+
+      # Build the project
       - name: Build Python App
         if: steps.check_files_python.outputs.files_exists == 'true'
         run: |
@@ -353,7 +322,29 @@ jobs:
       
       - name: Build .Net App
         if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        run: dotnet build  
+        run: dotnet build
+      
+      # Setup Docker
+      - name: Check file existence for Dockerfile
+        id: check_files_docker
+        uses: submittable/file-existence-action@v1
+        with:
+          files: "Dockerfile"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          driver: docker
       
       # Reads the latest tag on the repo and increments its minor verions
       # Increment style can be changed by including a #major, #minor, or #patch in a commit message
