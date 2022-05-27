@@ -216,7 +216,7 @@ jobs:
     needs: setup
 
     steps:
-      - name: Check to enable SonrQube scan for project
+      - name: Check to enable SonarQube scan for project
         run: |
           echo "Sonar-Nodejs value is: $SonarNodeJS"
           echo "Sonar-Python value is: $SonarPython"
@@ -285,8 +285,8 @@ jobs:
             !dist/**/*.md
       
       # Run SonarQube scan
-      - name: Run Sonar Scan - Python
-        if: ${{ inputs.sonar-python == 'true' }}
+      - name: Run SonarQube Scan - Python
+        if: steps.check_files_python_test.outputs.files_exists == 'true'
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
@@ -301,8 +301,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
-      - name: Run Sonar Scan - Nodejs
-        if: ${{ inputs.sonar-nodejs == 'true' }}
+      - name: Run SonarQube Scan - Nodejs
+        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
@@ -315,8 +315,8 @@ jobs:
          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
-      - name: Run Sonar Scan - .NET
-        if: ${{ inputs.sonar-dotnet == 'true' }}
+      - name: Run SonarQube Scan - .NET
+        if: ${{ inputs.sonar-dotnet == 'true' }} # TODO: update this after step: Check file existence for .NET Testfiles
         uses: submittable/sonarscan-dotnet@v2.1.2
         with:
           sonarProjectKey: ${{ inputs.repo_name }}
