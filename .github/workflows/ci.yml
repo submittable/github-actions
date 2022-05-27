@@ -315,6 +315,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        continue-on-error: true
       
       - name: Run SonarQube Scan - Nodejs
         if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
@@ -327,8 +328,9 @@ jobs:
             -Dsonar.verbose=true
             -Dsonar.projectKey=${{ inputs.repo_name }}
         env:
-         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        continue-on-error: true
       
       # TODO: update this after step: Check file existence for .NET Testfiles
       # - name: Run SonarQube Scan - .NET
@@ -343,6 +345,7 @@ jobs:
       #   env:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   continue-on-error: true
 
   # ---------------------------------------------------------------------
   # 3. Build the Docker container and publish
