@@ -31,6 +31,15 @@ on:
         default: '.'
         required: false
         type: string
+      
+      # ---------------------------------------------------------
+      # .NET project properties
+      # ---------------------------------------------------------
+      dotnetbuildarguments:
+        description: 'Optional command arguments to dotnet build'
+        default: 'nofile'
+        required: false
+        type: string
 
       # ---------------------------------------------------------
       # Check to enable SonrQube scan for project
@@ -48,11 +57,6 @@ on:
       sonar-dotnet:
         description: Whether to Scan code using SonarQube
         default: 'false'
-        required: false
-        type: string
-      dotnetbuildarguments:
-        description: 'Optional command arguments to dotnet build'
-        default: 'nofile'
         required: false
         type: string
       
