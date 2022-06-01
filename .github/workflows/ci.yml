@@ -23,6 +23,11 @@ on:
         required: false
         type: string
         default: 'false'
+      dotnet_project_name:
+        description: 'Optional command argument to dotnet test'
+        default: 'noproject'
+        required: false
+        type: string
       dotnetbuildarguments:
         description: 'Optional command arguments to dotnet build'
         default: 'nofile'
@@ -53,6 +58,11 @@ on:
         default: "nofile"
         required: false
         type: string
+      file_check_path_dotnet_test:
+        description: 'Checks file path to enable .NET unit test'
+        default: "**.Test/*.Test.csproj"
+        required: false
+        type: string
       file_check_path_python:
         description: 'checks file path to identify as a python pipeline job'
         default: "nofile"
@@ -65,7 +75,7 @@ on:
         type: string
       file_check_path_dotnet:
         description: 'checks file path to identify as a dotnet pipeline job'
-        default: "nofile"
+        default: "*.sln"
         required: false
         type: string
       repo_name:
@@ -176,6 +186,12 @@ jobs:
         uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_python_test }}"
+      
+      - name: Check file existence for .NET Testfiles
+        id: check_files_dotnet_test
+        uses: submittable/file-existence-action@v1
+        with:
+          files: "${{ inputs.file_check_path_dotnet_test }}"
 
       - name: Set Node Version
         if: steps.check_files_nodejs.outputs.files_exists == 'true'
@@ -238,6 +254,10 @@ jobs:
       - name: Run Python tests
         if: steps.check_files_python_test.outputs.files_exists == 'true'
         run: python -m pytest --cov-report xml:coverage-reports/coverage.xml --cov .
+      
+      - name: Run .NET tests
+        if: steps.check_files_dotnet_test.outputs.file_exists == 'true'
+        run: echo Found the .NET test files
 
       # Build fails running tests, so commenting until we have a working test case
       # - name: Run .Net test with .Net CLI
