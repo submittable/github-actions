@@ -331,7 +331,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       
       - name: SonarScanner for .NET
-        if: ${{ inputs.sonar-dotnet == 'true' }}
+        if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
         uses: submittable/sonarscan-dotnet@v2.1.2
         with:
           # The key of the SonarQube project
@@ -344,6 +344,8 @@ jobs:
           dotnetDisableTests: true
           # The SonarQube server URL. For SonarCloud, skip this setting.
           sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
+          # Optional extra command arguments the the SonarScanner 'begin' command
+          sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="coverage.xml"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
