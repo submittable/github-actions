@@ -262,6 +262,7 @@ jobs:
           dotnet tool install --global dotnet-coverage
           dotnet-coverage merge --remove-input-files -r coverage.cobertura.xml -f xml -o coverage.xml
           cat coverage.xml
+        continue-on-error: true # Only enable this to test
 
       # Build fails running tests, so commenting until we have a working test case
       # - name: Run .Net test with .Net CLI
