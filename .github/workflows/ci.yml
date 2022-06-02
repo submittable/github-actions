@@ -253,11 +253,15 @@ jobs:
       
       - name: Run Python tests
         if: steps.check_files_python_test.outputs.files_exists == 'true'
-        run: python -m pytest --cov-report xml:coverage-reports/coverage.xml --cov .
+        run: python -m pytest --cov-report xml:coverage.xml --cov .
       
       - name: Run .NET tests
         if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
-        run: echo Found the .NET test files
+        run: |
+          dotnet test --collect:"XPlat Code Coverage"
+          dotnet tool install --global dotnet-coverage
+          dotnet-coverage merge --remove-input-files -r coverage.cobertura.xml -f xml -o coverage.xml
+          cat coverage.xml
 
       # Build fails running tests, so commenting until we have a working test case
       # - name: Run .Net test with .Net CLI
