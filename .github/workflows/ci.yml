@@ -257,15 +257,15 @@ jobs:
         if: steps.check_files_python_test.outputs.files_exists == 'true'
         run: python -m pytest --cov-report xml:coverage.xml --cov .
       
-      - name: Run .NET tests
-        if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
-        run: |
-          export PATH="$PATH:/home/runner/.dotnet/tools"
-          dotnet test --collect:"XPlat Code Coverage"
-          dotnet tool install --global dotnet-coverage
-          dotnet-coverage merge --remove-input-files -r coverage.cobertura.xml -f xml -o coverage.xml
-          cat coverage.xml
-        continue-on-error: true # Temporary so projects can install coverlet.collector as a prerequisite
+      # - name: Run .NET tests
+      #   if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
+      #   run: |
+      #     export PATH="$PATH:/home/runner/.dotnet/tools"
+      #     dotnet test --collect:"XPlat Code Coverage"
+      #     dotnet tool install --global dotnet-coverage
+      #     dotnet-coverage merge --remove-input-files -r coverage.cobertura.xml -f xml -o coverage.xml
+      #     cat coverage.xml
+      #   continue-on-error: true # Temporary so projects can install coverlet.collector as a prerequisite
 
       # Build fails running tests, so commenting until we have a working test case
       # - name: Run .Net test with .Net CLI
@@ -341,11 +341,13 @@ jobs:
           # Optional command arguments to dotnet build
           dotnetBuildArguments: ./${{ inputs.dotnetbuildarguments }}
           # Optional. Set to 1 or true to not run 'dotnet test' command
-          dotnetDisableTests: true
+          # dotnetDisableTests: true
           # The SonarQube server URL. For SonarCloud, skip this setting.
           sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
+          # Optional command arguments to dotnet test
+          dotnetTestArguments: --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
           # Optional extra command arguments the the SonarScanner 'begin' command
-          sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="coverage.xml"
+          sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
