@@ -187,6 +187,8 @@ jobs:
         with:
           files: "${{ inputs.file_check_path_python_test }}"
       
+      - run: echo ${{ inputs.file_check_path_dotnet_test }}
+      
       - name: Check file existence for .NET Testfiles
         id: check_files_dotnet_test
         uses: andstor/file-existence-action@v1
