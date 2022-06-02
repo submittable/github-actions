@@ -60,7 +60,7 @@ on:
         type: string
       file_check_path_dotnet_test:
         description: 'Checks file path to enable .NET unit test'
-        default: "*.Test/*.Test.csproj, *.Tests/*.Test.csproj"
+        default: "*.Test/*.Test.csproj, *.Tests/*.Tests.csproj"
         required: false
         type: string
       file_check_path_python:
