@@ -256,7 +256,7 @@ jobs:
         run: python -m pytest --cov-report xml:coverage-reports/coverage.xml --cov .
       
       - name: Run .NET tests
-        if: steps.check_files_dotnet_test.outputs.file_exists == 'true'
+        if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
         run: echo Found the .NET test files
 
       # Build fails running tests, so commenting until we have a working test case
