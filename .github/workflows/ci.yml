@@ -50,12 +50,12 @@ on:
         type: string
       file_check_path_nodejs_test:
         description: 'checks file path to enable nodejs unit test'
-        default: "nofile"
+        default: "src/tests/*.ts"
         required: false
         type: string
       file_check_path_python_test:
         description: 'checks file path to enable python unit test'
-        default: "nofile"
+        default: "tests/test_*.py"
         required: false
         type: string
       file_check_path_dotnet_test:
