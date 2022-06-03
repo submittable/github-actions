@@ -1,55 +1,50 @@
-# This workflow is for multi-projects living in the same repo.
-# For this example, we use the fund-distribution project (.Net), however this example can be be used with any project (NodeJS, Python etc).
+#This workflow is for multi-projects living in the same repo.
+#For this example, we use the fund-distribution project (.Net), however this example can be be used with any project (NodeJS, Python etc).
 name: funds-distribution-payment-processing
 
 on:
+  push:
+    branches:
+      - '*'
   pull_request:
     branches: [ main ]
 
   workflow_dispatch:
 
 jobs:
-  # Multi-pipeline
-  # Run Tests, Sonar Scans, Build and Publish Docker Image
+  
+  #Run Tests, Sonar Scans, Build and Publish Docker Image
   funds-distribution:
       uses: submittable/github-actions/.github/workflows/ci.yml@main
       with:
-        # ---------------------------------------------------------
-        # General project properties
-        # ---------------------------------------------------------
-        repo_name: funds-distribution               # Name of the repository
-        image_name: submittable/funds-distribution  # Name of the owner and repository
-        sem-release: false                          # Enable or disable a semantic release
-        file: FundsDistribution/Dockerfile          # Dockerfile name
-        context: .                                  # Directory of the Dockerfile
-
-        # ---------------------------------------------------------
-        # Set build type for Nodejs, Python, or .NET
-        # ---------------------------------------------------------
         file_check_path_dotnet: "FundsDistribution.sln"
         dotnetbuildarguments: 'FundsDistribution/FundsDistribution.Api.csproj'
+        repo_name: funds-distribution #CHANGE this to the name of the project
+        image_name: ${{ github.repository }}
+        context: .
+        file: FundsDistribution/Dockerfile
+      ########## ENABLE OR DISABLE SONAR SCAN. Default is "false" ##############################
+        sonar-dotnet: false
+      ################Enable Semantic Release###################
+        sem-release: false
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   funds-distribution-payment-processing:
-      needs: funds-distribution # This job will start only after this specified job
+      needs: funds-distribution
       uses: submittable/github-actions/.github/workflows/ci.yml@main
       with:
-        # ---------------------------------------------------------
-        # General project properties
-        # ---------------------------------------------------------
-        repo_name: funds-distribution-payment-processing
-        image_name: submittable/funds-distribution-payment-processing
-        sem-release: false
-        context: .
-        file: FundsDistribution.PaymentProcessingService/Dockerfile
-
-        # ---------------------------------------------------------
-        # Set build type for Nodejs, Python, or .NET
-        # ---------------------------------------------------------
         file_check_path_dotnet: "FundsDistribution.sln"
         dotnetbuildarguments: 'FundsDistribution.PaymentProcessingService/FundsDistribution.PaymentProcessingService.csproj'
+        repo_name: funds-distribution-payment-processing #CHANGE this to the name of the project
+        image_name: submittable/funds-distribution-payment-processing
+        context: . #CHANGE this value to the appropriate location of your dockerfile eg ./project default is "." for root directory
+        file: FundsDistribution.PaymentProcessingService/Dockerfile
+      ########## ENABLE OR DISABLE SONAR SCAN. Default is "false" ##############################
+        sonar-dotnet: false
+      ################Enable Semantic Release###################
+        sem-release: false
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
