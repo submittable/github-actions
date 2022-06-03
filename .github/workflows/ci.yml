@@ -79,7 +79,8 @@ on:
         required: false
         type: string
       repo_name:
-        required: true
+        default: '${{ github.event.repository.name }}'
+        required: false
         type: string
       image_name:
         required: true
