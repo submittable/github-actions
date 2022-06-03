@@ -258,15 +258,9 @@ jobs:
         if: steps.check_files_python_test.outputs.files_exists == 'true'
         run: python -m pytest --cov-report xml:coverage.xml --cov .
       
-      # - name: Run .NET tests
-      #   if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
-      #   run: |
-      #     export PATH="$PATH:/home/runner/.dotnet/tools"
-      #     dotnet test --collect:"XPlat Code Coverage"
-      #     dotnet tool install --global dotnet-coverage
-      #     dotnet-coverage merge --remove-input-files -r coverage.cobertura.xml -f xml -o coverage.xml
-      #     cat coverage.xml
-      #   continue-on-error: true # Temporary so projects can install coverlet.collector as a prerequisite
+      - name: Run .NET tests
+        if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
+        run: dotnet test --logger trx
 
       # Build fails running tests, so commenting until we have a working test case
       # - name: Run .Net test with .Net CLI
