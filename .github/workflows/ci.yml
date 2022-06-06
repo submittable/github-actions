@@ -253,6 +253,7 @@ jobs:
       - name: Run .NET tests
         if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
         run: dotnet test --logger trx
+        continue-on-error: true
 
       # ---------------------------------------------------------
       # Build the project
