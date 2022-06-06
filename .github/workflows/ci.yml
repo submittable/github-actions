@@ -366,58 +366,58 @@ jobs:
           # Optional extra command arguments the the SonarScanner 'begin' command
           sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
 
-  # ---------------------------------------------------------------------
-  # 3. Build the Docker container and publish
-  # ---------------------------------------------------------------------
-  build:
-    name: Build Container
-    runs-on: [self-hosted, linux]
-    needs: [setup, test]
+  # # ---------------------------------------------------------------------
+  # # 3. Build the Docker container and publish
+  # # ---------------------------------------------------------------------
+  # build:
+  #   name: Build Container
+  #   runs-on: [self-hosted, linux]
+  #   needs: [setup, test]
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of SonarQube reporting
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         # Disabling shallow clone is recommended for improving relevancy of SonarQube reporting
+  #         fetch-depth: 0
 
-      # ---------------------------------------------------------
-      # Setup Docker
-      # ---------------------------------------------------------
-      - name: Check file existence for Dockerfile
-        id: check_files_docker
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "Dockerfile"
+  #     # ---------------------------------------------------------
+  #     # Setup Docker
+  #     # ---------------------------------------------------------
+  #     - name: Check file existence for Dockerfile
+  #       id: check_files_docker
+  #       uses: submittable/file-existence-action@v1
+  #       with:
+  #         files: "Dockerfile"
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1.10.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Login to GitHub Container Registry
+  #       uses: docker/login-action@v1.10.0
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+  #     - name: Set up QEMU
+  #       uses: docker/setup-qemu-action@v1
       
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          driver: docker
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v1
+  #       with:
+  #         driver: docker
       
-      # ---------------------------------------------------------
-      # Tag, build, publish
-      # ---------------------------------------------------------
-      # Reads the latest tag on the repo and increments its minor verions
-      # Increment style can be changed by including a #major, #minor, or #patch in a commit message
-      - name: Bump version and push tag
-        id: tag_version
-        uses: submittable/github-tag-action@1.36.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCHES: main
-          WITH_V: true
-          #INITIAL_VERSION: 0.0.0 #Set initial version before bump. Default is 0.0.0
+      # # ---------------------------------------------------------
+      # # Tag, build, publish
+      # # ---------------------------------------------------------
+      # # Reads the latest tag on the repo and increments its minor verions
+      # # Increment style can be changed by including a #major, #minor, or #patch in a commit message
+      # - name: Bump version and push tag
+      #   id: tag_version
+      #   uses: submittable/github-tag-action@1.36.0
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     RELEASE_BRANCHES: main
+      #     WITH_V: true
+      #     #INITIAL_VERSION: 0.0.0 #Set initial version before bump. Default is 0.0.0
       
       # # Attempt to make the REF string valid docker tag syntax
       # - name: Extract source branch/pr name
@@ -440,16 +440,16 @@ jobs:
       #       type=raw,value=${{ steps.extract_ref_tag.outputs.branch }}
       #       type=raw,value=${{ GitHub.sha }}
       
-      # Build, Tag, and Push the docker image to Github Container Registry
-      - name: Build, Tag, and Push Docker Image
-        # if: steps.check_files_docker.outputs.files_exists == 'true'
-        uses: docker/build-push-action@v2.7.0
-        with:
-          context: ${{ inputs.context }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          file: ${{ inputs.file }}
+      # # Build, Tag, and Push the docker image to Github Container Registry
+      # - name: Build, Tag, and Push Docker Image
+      #   # if: steps.check_files_docker.outputs.files_exists == 'true'
+      #   uses: docker/build-push-action@v2.7.0
+      #   with:
+      #     context: ${{ inputs.context }}
+      #     push: true
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
+      #     file: ${{ inputs.file }}
       
       # # Creates a Github release with the new semantic version
       # - name: Create a GitHub Semantic release
@@ -464,17 +464,17 @@ jobs:
       #     release_name: ${{ steps.tag_version.outputs.new_tag }}
       #     body: ${{ steps.tag_version.outputs.changelog }}
 
-      # ---------------------------------------------------------
-      # Notifications
-      # ---------------------------------------------------------
-      # Sends a slack notification to slack build channel on Success
-      - name: Slack Notification - On Success
-        if: endsWith(GitHub.ref, 'main') && success()
-        uses: submittable/action-slack-notify@v2.2.0
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: Build job for Release ${{ steps.tag_version.outputs.new_tag }} completed successfully!
-          SLACK_FOOTER: Powered By Submittable GitHub Actions Library
+      # # ---------------------------------------------------------
+      # # Notifications
+      # # ---------------------------------------------------------
+      # # Sends a slack notification to slack build channel on Success
+      # - name: Slack Notification - On Success
+      #   if: endsWith(GitHub.ref, 'main') && success()
+      #   uses: submittable/action-slack-notify@v2.2.0
+      #   env:
+      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      #     SLACK_MESSAGE: Build job for Release ${{ steps.tag_version.outputs.new_tag }} completed successfully!
+      #     SLACK_FOOTER: Powered By Submittable GitHub Actions Library
       
       # # Sends a slack notification to slack build channel if Dockerfile is not present
       # - name: Slack Notification - Dockerfile not Present
