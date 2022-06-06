@@ -253,7 +253,7 @@ jobs:
       - name: Run .NET tests
         if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
         run: dotnet test --logger trx
-        continue-on-error: true
+        continue-on-error: true # TODO: Enable this to fail when unit tests fails
 
       # ---------------------------------------------------------
       # Build the project
