@@ -254,13 +254,6 @@ jobs:
         if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
         run: dotnet test --logger trx
 
-      # Build fails running tests, so commenting until we have a working test case
-      # - name: Run .Net test with .Net CLI
-      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
-      #   run: dotnet test --settings coverlet.runsettings --logger:trx
-      #   env:
-      #     ASPNETCORE_ENVIRONMENT: Development
-
       # ---------------------------------------------------------
       # Build the project
       # ---------------------------------------------------------
@@ -365,6 +358,10 @@ jobs:
           dotnetTestArguments: --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
           # Optional extra command arguments the the SonarScanner 'begin' command
           sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        continue-on-error: true
 
   # # ---------------------------------------------------------------------
   # # 3. Build the Docker container and publish
