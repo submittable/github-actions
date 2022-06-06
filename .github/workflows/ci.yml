@@ -1,89 +1,118 @@
-name: Test, Sonar Scan and Docker Build-Push Workflow
+name: Submittable CI Workflow
 
 on:
   workflow_call:
     inputs:
+      # ---------------------------------------------------------
+      # General project properties
+      # ---------------------------------------------------------
+      repo_name:
+        description: 'The repository name e.g. hello-world'
+        default: '${{ github.event.repository.name }}'
+        required: false
+        type: string
+      image_name:
+        description: 'The owner and repository name e.g. submittable/hello-world'
+        default: '${{ github.repository }}'
+        required: false
+        type: string
       sem-release:
         description: Whether to run a semantic release
-        required: false
-        type: string
         default: 'true'
-      sonar-python:
-        description: Whether to Scan code using SonarQube
         required: false
         type: string
-        default: 'false'
-      sonar-nodejs:
-        description: Whether to Scan code using SonarQube
+      file:
+        description: 'Adds the path to the dockerfile ./Dockerfile or root Dockerfile'
+        default: 'Dockerfile'
         required: false
         type: string
-        default: 'false'
-      sonar-dotnet:
-        description: Whether to Scan code using SonarQube
+      context:
+        description: 'Adds the context path to the dockerfile'
+        default: '.'
         required: false
         type: string
-        default: 'false'
+      
+      # ---------------------------------------------------------
+      # .NET project properties
+      # ---------------------------------------------------------
       dotnetbuildarguments:
         description: 'Optional command arguments to dotnet build'
         default: 'nofile'
         required: false
         type: string
-      nodejs_version:
-        description: 'sets node version'
-        default: '15.x'
+
+      # ---------------------------------------------------------
+      # Check to enable SonrQube scan for project
+      # ---------------------------------------------------------
+      sonar-python:
+        description: Whether to Scan code using SonarQube
+        default: 'false'
         required: false
         type: string
-      python_version:
-        description: 'sets python version'
-        default: '3.6'
+      sonar-nodejs:
+        description: Whether to Scan code using SonarQube
+        default: 'false'
         required: false
         type: string
-      dotnet_version:
-        description: 'sets .net version for dotnet core application'
-        default: '5.0.x'
+      sonar-dotnet:
+        description: Whether to Scan code using SonarQube
+        default: 'false'
         required: false
         type: string
-      file_check_path_nodejs_test:
-        description: 'checks file path to enable nodejs unit test'
-        default: "nofile"
-        required: false
-        type: string
-      file_check_path_python_test:
-        description: 'checks file path to enable python unit test'
-        default: "nofile"
-        required: false
-        type: string
+      
+      # ---------------------------------------------------------
+      # Identify project
+      # ---------------------------------------------------------
       file_check_path_python:
-        description: 'checks file path to identify as a python pipeline job'
-        default: "nofile"
+        description: 'Checks file path to identify as a python pipeline job'
+        default: "requirements.txt"
         required: false
         type: string
       file_check_path_nodejs:
-        description: 'checks file path to identify as a nodejs pipeline job'
-        default: "nofile"
+        description: 'Checks file path to identify as a nodejs pipeline job'
+        default: "package.json"
         required: false
         type: string
       file_check_path_dotnet:
-        description: 'checks file path to identify as a dotnet pipeline job'
-        default: "nofile"
+        description: 'Checks file path to identify as a dotnet pipeline job'
+        default: "*.sln"
         required: false
         type: string
-      repo_name:
-        required: true
-        type: string
-      image_name:
-        required: true
-        type: string
-      file:
-        description: 'adds the path to the dockerfile ./Dockerfile or root Dockerfile'
-        default: 'Dockerfile'
+      
+      # ---------------------------------------------------------
+      # Identify project version
+      # ---------------------------------------------------------
+      python_version:
+        description: 'Sets python version'
+        default: '3.6'
         required: false
         type: string
-      context:
-        description: 'adds the context path to the dockerfile'
-        default: '.'
+      nodejs_version:
+        description: 'Sets node version'
+        default: '15.x'
         required: false
         type: string
+      dotnet_version:
+        description: 'Sets .NET version for .NET core application'
+        default: '5.0.x'
+        required: false
+        type: string
+      
+      # ---------------------------------------------------------
+      # Identify the location of the unit tests
+      # ---------------------------------------------------------
+      file_check_path_python_test:
+        description: 'Checks file path to enable python unit test'
+        default: "tests/__init__.py"
+        required: false
+        type: string
+      file_check_path_nodejs_test:
+        description: 'Checks file path to enable node unit test'
+        default: "src/__tests__/*.test.js"
+        required: false
+        type: string
+      # TODO: file_check_path_dotnet_test
+      
     secrets:
       SLACK_WEBHOOK:
         required: true
@@ -93,57 +122,46 @@ on:
         required: true
 
 jobs:
-  build:
-
+  # ---------------------------------------------------------------------
+  # 1. Setup the CI workflow with dependencies and project properties
+  # ---------------------------------------------------------------------
+  setup:
+    name: Setup Workflow
     runs-on: [self-hosted, linux]
-    env:
-      SonarDotNet: ${{ inputs.sonar-dotnet }}
-      SonarPython: ${{ inputs.sonar-python }}
-      SonarNodeJS: ${{ inputs.sonar-nodejs }}
 
     steps:
+      - name: Submittable CI Workflow started
+        run: echo "✅🎉 Submittable CI Workflow started ✅🎉"
 
-      - name: ✅🎉Universal Reusable Workflow 2.0 started✅🎉
-        run: echo Universal Reusable Workflow 2.0 started!
+  # ---------------------------------------------------------------------
+  # 2. Run tests and send SonarQube coverage report
+  # ---------------------------------------------------------------------
+  test:
+    name: Run Tests
+    runs-on: [self-hosted, linux]
+    needs: setup
 
-      - name: Check for SonarScan value
-        run: |
-          echo "Sonar-Nodejs value is: $SonarNodeJS"
-          echo "Sonar-Python value is: $SonarPython"
-          echo "Sonar-DotNet value is: $SonarDotNet"
-
+    steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          # Disabling shallow clone is recommended for improving relevancy of sonarqube reporting
+          # Disabling shallow clone is recommended for improving relevancy of SonarQube reporting
           fetch-depth: 0
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1.10.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
       
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          driver: docker
-      
-      - name: Check file existence for Nodejs
-        id: check_files_nodejs
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "${{ inputs.file_check_path_nodejs }}"
-      
+      # ---------------------------------------------------------
+      # Identify project
+      # ---------------------------------------------------------
       - name: Check file existence for Python
         id: check_files_python
         uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_python }}"
+
+      - name: Check file existence for Nodejs
+        id: check_files_nodejs
+        uses: submittable/file-existence-action@v1
+        with:
+          files: "${{ inputs.file_check_path_nodejs }}"
       
       - name: Check file existence for .Net
         id: check_files_dotnet
@@ -151,55 +169,34 @@ jobs:
         with:
           files: "${{ inputs.file_check_path_dotnet }}"
       
-      - name: Setup Nuget
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        uses: Nuget/setup-nuget@v1.0.5
-      
-      # - name: Add msbuild to PATH
-      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
-      #   uses: microsoft/setup-msbuild@v1.0.2
-
-      - name: Check file existence for Dockerfile
-        id: check_files_docker
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "Dockerfile"
-
-      - name: Check file existence for Node Testfiles
-        id: check_files_nodejs_test
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "${{ inputs.file_check_path_nodejs_test }}"
-      
-      - name: Check file existence for Python Testfiles
-        id: check_files_python_test
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "${{ inputs.file_check_path_python_test }}"
-
-      - name: Set Node Version
-        if: steps.check_files_nodejs.outputs.files_exists == 'true'
-        # Only runs if all of the files exists
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ inputs.nodejs_version }}
-      
+      # ---------------------------------------------------------
+      # Identify project version
+      # ---------------------------------------------------------
       - name: Set Python Version
         if: steps.check_files_python.outputs.files_exists == 'true'
         uses: actions/setup-python@v2
         with:
           python-version: ${{ inputs.python_version }}
       
-      - name: Setup DotNet Version
+      - name: Set Node Version
+        if: steps.check_files_nodejs.outputs.files_exists == 'true'
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ inputs.nodejs_version }}
+        
+      - name: Set .Net Version
         if: steps.check_files_dotnet.outputs.files_exists == 'true'
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '${{ inputs.dotnet_version }}'
       
-      - name: Install Nodejs Dependencies
-        if: steps.check_files_nodejs.outputs.files_exists == 'true'
-        run: npm ci
+      - name: Setup Nuget
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        uses: Nuget/setup-nuget@v1.0.5
       
+      # ---------------------------------------------------------
+      # Install project dependencies
+      # ---------------------------------------------------------
       - name: Install Python Dependencies
         if: steps.check_files_python.outputs.files_exists == 'true'
         run: |
@@ -207,44 +204,92 @@ jobs:
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       
-      - name: Install DotNet dependencies
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        run: dotnet restore
-
-      - name: Build Nodejs App
+      - name: Install Nodejs Dependencies
         if: steps.check_files_nodejs.outputs.files_exists == 'true'
-        run: npm run build --if-present
+        run: npm ci
       
-      - name: Build Python App
-        if: steps.check_files_python.outputs.files_exists == 'true'
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --select=E9,F63,F7,F82 --exit-zero --max-complexity=10 --max-line-length=127 --show-source --statistics
-        
-      - name: Restore nuget packages
+      - name: Install .Net dependencies
         if: steps.check_files_dotnet.outputs.files_exists == 'true'
         run: dotnet restore
-        # run: nuget restore ./${{ inputs.file_check_path_dotnet }}
-      
-      - name: Build DotNet App
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        run: dotnet build
 
+      # ---------------------------------------------------------
+      # Identify the location of the unit tests
+      # ---------------------------------------------------------
+      - name: Check file existence for Python Testfiles
+        if: steps.check_files_python.outputs.files_exists == 'true'
+        id: check_files_python_test
+        uses: submittable/file-existence-action@v1
+        with:
+          files: "${{ inputs.file_check_path_python_test }}"
+      
+      - name: Check file existence for Node Testfiles
+        if: steps.check_files_nodejs.outputs.files_exists == 'true'
+        id: check_files_nodejs_test
+        uses: submittable/file-existence-action@v1
+        with:
+          files: "${{ inputs.file_check_path_nodejs_test }}"
+
+      # TODO: Check file existence for .NET Testfiles
+      
+      # ---------------------------------------------------------
+      # Run tests
+      # ---------------------------------------------------------
+      - name: Run Python tests
+        if: steps.check_files_python_test.outputs.files_exists == 'true'
+        run: python -m pytest --cov-report xml:coverage-reports/coverage.xml --cov .
+      
       - name: Run Nodejs tests
         if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
         run: npm test
       
-      - name: Run Python tests
-        if: steps.check_files_python_test.outputs.files_exists == 'true'
-        run: python -m pytest --cov-report xml:coverage-reports/coverage.xml --cov .
-
       # Build fails running tests, so commenting until we have a working test case
       # - name: Run .Net test with .Net CLI
       #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
       #   run: dotnet test --settings coverlet.runsettings --logger:trx
       #   env:
       #     ASPNETCORE_ENVIRONMENT: Development
+
+      # ---------------------------------------------------------
+      # Build the project
+      # ---------------------------------------------------------
+      - name: Build Python App
+        if: steps.check_files_python.outputs.files_exists == 'true'
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --select=E9,F63,F7,F82 --exit-zero --max-complexity=10 --max-line-length=127 --show-source --statistics
+
+      - name: Build Nodejs App
+        if: steps.check_files_nodejs.outputs.files_exists == 'true'
+        run: npm run build --if-present
+        
+      - name: Restore nuget packages
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        run: dotnet restore
+        # run: nuget restore ./${{ inputs.file_check_path_dotnet }}
+      
+      - name: Build .Net App
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
+        run: dotnet build
+
+      # ---------------------------------------------------------
+      # Archive coverage report and artifacts
+      # ---------------------------------------------------------
+      - name: Archive code coverage results - Python
+        if: steps.check_files_python_test.outputs.files_exists == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: coverage-reports/coverage.xml
+          retention-days: 5
+      
+      - name: Archive code coverage results - Nodejs
+        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-coverage-report
+          path: output/test/code-coverage.html
+          retention-days: 5
 
       - name: Archive production artifacts
         if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
@@ -254,40 +299,12 @@ jobs:
           path: |
             dist
             !dist/**/*.md
-
-      - name: Archive code coverage results - Nodejs
-        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
-        uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report
-          path: output/test/code-coverage.html
-          retention-days: 5
       
-      - name: Archive code coverage results - Python
+      # ---------------------------------------------------------
+      # Run SonarQube scan
+      # ---------------------------------------------------------
+      - name: Run SonarQube Scan - Python
         if: steps.check_files_python_test.outputs.files_exists == 'true'
-        uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report
-          path: coverage-reports/coverage.xml
-          retention-days: 5
-    
-      # Enable only when Sonar server is available. It will run Static Code Analysis
-      - name: Run Sonar Scan - Nodejs
-        if: ${{ inputs.sonar-nodejs == 'true' }}
-        uses: sonarsource/sonarqube-scan-action@master
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.projectName=${{ inputs.repo_name }}
-            -Dsonar.projectVersion=1.0.0
-            -Dsonar.verbose=true
-            -Dsonar.projectKey=${{ inputs.repo_name }}
-        env:
-         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
-      - name: Run Sonar Scan - Python
-        if: ${{ inputs.sonar-python == 'true' }}
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
@@ -301,25 +318,80 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        continue-on-error: true
       
-      - name: SonarScanner for .NET
-        if: ${{ inputs.sonar-dotnet == 'true' }}
-        uses: submittable/sonarscan-dotnet@v2.1.2
+      - name: Run SonarQube Scan - Nodejs
+        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
+        uses: sonarsource/sonarqube-scan-action@master
         with:
-          # The key of the SonarQube project
-          sonarProjectKey: ${{ inputs.repo_name }}
-          # The name of the SonarQube project
-          sonarProjectName:  ${{ inputs.repo_name }}
-          # Optional command arguments to dotnet build
-          dotnetBuildArguments: ./${{ inputs.dotnetbuildarguments }}
-          # Optional. Set to 1 or true to not run 'dotnet test' command
-          dotnetDisableTests: true
-          # The SonarQube server URL. For SonarCloud, skip this setting.
-          sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
+          projectBaseDir: .
+          args: >
+            -Dsonar.projectName=${{ inputs.repo_name }}
+            -Dsonar.projectVersion=1.0.0
+            -Dsonar.verbose=true
+            -Dsonar.projectKey=${{ inputs.repo_name }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        continue-on-error: true
       
+      # TODO: update this after step: Check file existence for .NET Testfiles
+      # - name: Run SonarQube Scan - .NET
+      #   if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
+      #   uses: submittable/sonarscan-dotnet@v2.1.2
+      #   with:
+      #     sonarProjectKey: ${{ inputs.repo_name }}
+      #     sonarProjectName:  ${{ inputs.repo_name }}
+      #     dotnetBuildArguments: ./${{ inputs.dotnetbuildarguments }}
+      #     dotnetDisableTests: true
+      #     sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   continue-on-error: true
+
+  # ---------------------------------------------------------------------
+  # 3. Build the Docker container and publish
+  # ---------------------------------------------------------------------
+  build:
+    name: Build Container
+    runs-on: [self-hosted, linux]
+    needs: [setup, test]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of SonarQube reporting
+          fetch-depth: 0
+
+      # ---------------------------------------------------------
+      # Setup Docker
+      # ---------------------------------------------------------
+      - name: Check file existence for Dockerfile
+        id: check_files_docker
+        uses: submittable/file-existence-action@v1
+        with:
+          files: "Dockerfile"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          driver: docker
+      
+      # ---------------------------------------------------------
+      # Tag, build, publish
+      # ---------------------------------------------------------
       # Reads the latest tag on the repo and increments its minor verions
       # Increment style can be changed by including a #major, #minor, or #patch in a commit message
       - name: Bump version and push tag
@@ -352,8 +424,8 @@ jobs:
             type=raw,value=${{ steps.extract_ref_tag.outputs.branch }}
             type=raw,value=${{ GitHub.sha }}
       
-      # Build, Tag and Push the docker image to Github Container Registry
-      - name: Build, Tag and Push Docker Image
+      # Build, Tag, and Push the docker image to Github Container Registry
+      - name: Build, Tag, and Push Docker Image
         # if: steps.check_files_docker.outputs.files_exists == 'true'
         uses: docker/build-push-action@v2.7.0
         with:
@@ -376,6 +448,9 @@ jobs:
           release_name: ${{ steps.tag_version.outputs.new_tag }}
           body: ${{ steps.tag_version.outputs.changelog }}
 
+      # ---------------------------------------------------------
+      # Notifications
+      # ---------------------------------------------------------
       # Sends a slack notification to slack build channel on Success
       - name: Slack Notification - On Success
         if: endsWith(GitHub.ref, 'main') && success()

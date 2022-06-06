@@ -1,5 +1,4 @@
-name: Reusable Workflow 2.0 #CHANGE this to the project or repo name
-#This reusable workflows tests and scans the code for any vulnerabilities. Currently working on Python, Nodejs and .Net projects.
+name: Reusable Workflow 3.0
 
 on:
   pull_request:
@@ -8,37 +7,57 @@ on:
   workflow_dispatch:
 
 jobs:
-  
-  #Run Tests, Sonar Scans, Build and Publish Docker Image
+  # Run Tests, SonarQube Scans, Build and Publish Docker Image
   ci:
       uses: submittable/github-actions/.github/workflows/ci.yml@main
       with:
-      ##############SET BUILDER VERSION - CHOOSE ONE (OPTIONAL)################
-        nodejs_version: '15.x' #Choose which node version [10.x, 12.x, 14.x, 15.x]. Default is 15.x
-        dotnet_version: '5.0.x' #choose which dotnet version default is 5.0.x
-        python_version: '3.6' #Choose which python version [3.6, 3.7, 3.8, 3.9]. default is 3.6
-      ##############SET BUILD TYPE NODEJS, PYTHON OR .NET - CHOOSE ONE (REQUIRED)################
-        file_check_path_python: "nofile" #CHANGE this to a file name or path to the file to set build type to Python ex: requirement.txt or /Source/requirement.txt (absolute/full path)
-        file_check_path_nodejs: "nofile" #CHANGE this to a file name or path to the file to set build type to Node ex: package.json or /src/package.json (absolute/full path)
-        file_check_path_dotnet: "nofile" #CHANGE this to a file name or path to the file to set build type to .Net ex: SQSListener.csproj or /SQSListener/SQSListener/SQSListener.csproj (absolute/full path)
-      ###########################################################################################
-      ##############UNIT TESTS - CHOOSE AN OPTION (OPTIONAL)################
-        file_check_path_nodejs_test: "nofile" #CHANGE this to the location of your test file for python ex: package.json or /src/package.json
-        file_check_path_python_test: "nofile" #CHANGE this to the location of your test file for python ex: requirement.txt or /Source/requirement.txt
-      ######################################################################
-      ########## ENABLE OR DISABLE SONAR SCAN. Default is "false" ##############################
-        sonar-python: false
-        sonar-dotnet: false
-        sonar-nodejs: false
-      ################Enable Semantic Release###################
-        sem-release: false
-      ##########FOR .NET SONAR SCAN ONLY##################
-        dotnetbuildarguments: 'src/Submittable.Api' #Set the path to dotnet build for SonarQube. See https://github.com/submittable/funds-distribution-tool
-      ###############################################
-        repo_name: submittable-test-python-repo #CHANGE this to the name of the project
-        image_name: ${{ github.repository }}
-        context: . #CHANGE this value to the appropriate location of your dockerfile eg ./project/ default is "." for root directory
-        file: 'Dockerfile' #CHANGE this value to the appropriate location of your dockerfile eg project/Dockerfile default is "Dockerfile" for dockerfile liviing in root directory
+        # NOTE: you do not have to fill out the values below.
+        # The values below are defaults and some such as repo_name
+        # have functions to detect the repo name. So, if you'd like
+        # to override the defaults then uncomment the fields below
+        # and update them. 
+
+        # ---------------------------------------------------------
+        # General project properties
+        # ---------------------------------------------------------
+        # repo_name: 'your-repo'                # Name of the repository
+        # image_name: 'submittable/your-repo'   # Name of the owner and repository
+        # sem-release: true                     # Enable or disable a semantic release
+        # file: 'Dockerfile'                    # Dockerfile name
+        # context: .                            # Directory of the Dockerfile
+
+        # ---------------------------------------------------------
+        # Set build type for Nodejs, Python, or .NET
+        # ---------------------------------------------------------
+        # file_check_path_python: "requirements.txt"
+        # file_check_path_nodejs: "package.json"
+        # file_check_path_dotnet: "*.sln"
+
+        # ---------------------------------------------------------
+        # Set builder version
+        # ---------------------------------------------------------
+        # nodejs_version: '15.x'
+        # dotnet_version: '5.0.x'
+        # python_version: '3.6'
+
+        # ---------------------------------------------------------
+        # Unit tests folder location
+        # ---------------------------------------------------------
+        # file_check_path_nodejs_test: "src/__tests__/*"
+        # file_check_path_python_test: "tests/*"
+        
+        # ---------------------------------------------------------
+        # Enable or disable SonarQube scan
+        # ---------------------------------------------------------
+        # DEPRECATED: run SonarQube scan when unit tests are identified
+        # sonar-python: true
+        # sonar-dotnet: false
+        # sonar-nodejs: false
+        
+        # ---------------------------------------------------------
+        # For .NET SonarQube scan only
+        # ---------------------------------------------------------
+        # dotnetbuildarguments: 'src/Submittable.Api' # Set the path to dotnet build for SonarQube
       secrets:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
