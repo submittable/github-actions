@@ -74,7 +74,7 @@ on:
         required: false
         type: string
       file_check_path_dotnet:
-        description: 'checks file path to identify as a dotnet pipeline job'
+        description: 'Checks file path to identify as a dotnet pipeline job'
         default: "*.sln"
         required: false
         type: string
@@ -414,6 +414,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCHES: main
           WITH_V: true
+          #INITIAL_VERSION: 0.0.0 #Set initial version before bump. Default is 0.0.0
       
       # Attempt to make the REF string valid docker tag syntax
       - name: Extract source branch/pr name
