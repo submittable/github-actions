@@ -103,7 +103,7 @@ on:
       # ---------------------------------------------------------
       file_check_path_python_test:
         description: 'Checks file path to enable python unit test'
-        default: "tests/__init__.py"
+        default: "tests/test_*.py"
         required: false
         type: string
       file_check_path_nodejs_test:
@@ -157,19 +157,19 @@ jobs:
       # ---------------------------------------------------------
       - name: Check file existence for Python
         id: check_files_python
-        uses: andstor/file-existence-action@v1
+        uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_python }}"
 
       - name: Check file existence for Nodejs
         id: check_files_nodejs
-        uses: andstor/file-existence-action@v1
+        uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_nodejs }}"
       
       - name: Check file existence for .Net
         id: check_files_dotnet
-        uses: andstor/file-existence-action@v1
+        uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_dotnet }}"
       
@@ -222,20 +222,20 @@ jobs:
       - name: Check file existence for Python Testfiles
         if: steps.check_files_python.outputs.files_exists == 'true'
         id: check_files_python_test
-        uses: andstor/file-existence-action@v1
+        uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_python_test }}"
       
       - name: Check file existence for Node Testfiles
         if: steps.check_files_nodejs.outputs.files_exists == 'true'
         id: check_files_nodejs_test
-        uses: andstor/file-existence-action@v1
+        uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_nodejs_test }}"
 
       - name: Check file existence for .NET Testfiles
         id: check_files_dotnet_test
-        uses: andstor/file-existence-action@v1
+        uses: submittable/file-existence-action@v1
         with:
           files: "${{ inputs.file_check_path_dotnet_test }}"
       
