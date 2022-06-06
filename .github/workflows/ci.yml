@@ -1,4 +1,4 @@
-name: CI Workflow
+name: Submittable CI Workflow
 
 on:
   workflow_call:
