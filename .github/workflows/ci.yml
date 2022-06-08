@@ -42,7 +42,7 @@ on:
         type: string
 
       # ---------------------------------------------------------
-      # Check to enable SonrQube scan for project
+      # Check to enable SonarQube scan for project
       # ---------------------------------------------------------
       sonar-python:
         description: Whether to Scan code using SonarQube
@@ -99,10 +99,18 @@ on:
         type: string
       
       # ---------------------------------------------------------
-      # Check to enable the unit tests
+      # Check to enable running the unit tests
       # ---------------------------------------------------------
-      # TODO: run-python-tests
-      # TODO: run-nodejs-tests
+      run-python-tests:
+        description: Whether to run python unit tests
+        default: 'false'
+        required: false
+        type: string
+      run-nodejs-tests:
+        description: Whether to run node unit tests
+        default: 'false'
+        required: false
+        type: string
       run-dotnet-tests:
         description: Whether to run .NET unit tests
         default: 'false'
@@ -254,11 +262,11 @@ jobs:
       # Run tests
       # ---------------------------------------------------------
       - name: Run Python tests
-        if: steps.check_files_python_test.outputs.files_exists == 'true'
+        if: ${{ inputs.run-python-tests == 'true' && steps.check_files_python_test.outputs.files_exists == 'true' }}
         run: python -m pytest --cov-report xml:coverage.xml --cov .
       
       - name: Run Nodejs tests
-        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
+        if: ${{ inputs.run-nodejs-tests == 'true' && steps.check_files_nodejs_test.outputs.files_exists == 'true' }}
         run: npm test
       
       - name: Run .NET tests
