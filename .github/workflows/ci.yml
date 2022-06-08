@@ -103,7 +103,7 @@ on:
       # ---------------------------------------------------------
       file_check_path_python_test:
         description: 'Checks file path to enable python unit test'
-        default: "tests/__init__.py"
+        default: "tests/test_*.py"
         required: false
         type: string
       file_check_path_nodejs_test:
@@ -111,7 +111,11 @@ on:
         default: "src/__tests__/*.test.js"
         required: false
         type: string
-      # TODO: file_check_path_dotnet_test
+      file_check_path_dotnet_test:
+        description: 'Checks file path to enable .NET unit test'
+        default: "*.Test/*.Test.csproj"
+        required: false
+        type: string
       
     secrets:
       SLACK_WEBHOOK:
@@ -229,25 +233,27 @@ jobs:
         with:
           files: "${{ inputs.file_check_path_nodejs_test }}"
 
-      # TODO: Check file existence for .NET Testfiles
+      - name: Check file existence for .NET Testfiles
+        id: check_files_dotnet_test
+        uses: submittable/file-existence-action@v1
+        with:
+          files: "${{ inputs.file_check_path_dotnet_test }}"
       
       # ---------------------------------------------------------
       # Run tests
       # ---------------------------------------------------------
       - name: Run Python tests
         if: steps.check_files_python_test.outputs.files_exists == 'true'
-        run: python -m pytest --cov-report xml:coverage-reports/coverage.xml --cov .
+        run: python -m pytest --cov-report xml:coverage.xml --cov .
       
       - name: Run Nodejs tests
         if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
         run: npm test
       
-      # Build fails running tests, so commenting until we have a working test case
-      # - name: Run .Net test with .Net CLI
-      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
-      #   run: dotnet test --settings coverlet.runsettings --logger:trx
-      #   env:
-      #     ASPNETCORE_ENVIRONMENT: Development
+      - name: Run .NET tests
+        if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
+        run: dotnet test --logger trx
+        continue-on-error: true # TODO: Enable this to fail when unit tests fails
 
       # ---------------------------------------------------------
       # Build the project
@@ -335,20 +341,28 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         continue-on-error: true
       
-      # TODO: update this after step: Check file existence for .NET Testfiles
-      # - name: Run SonarQube Scan - .NET
-      #   if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
-      #   uses: submittable/sonarscan-dotnet@v2.1.2
-      #   with:
-      #     sonarProjectKey: ${{ inputs.repo_name }}
-      #     sonarProjectName:  ${{ inputs.repo_name }}
-      #     dotnetBuildArguments: ./${{ inputs.dotnetbuildarguments }}
-      #     dotnetDisableTests: true
-      #     sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
-      #   env:
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   continue-on-error: true
+      - name: SonarScanner for .NET
+        if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
+        uses: submittable/sonarscan-dotnet@v2.1.2
+        with:
+          # The key of the SonarQube project
+          sonarProjectKey: ${{ inputs.repo_name }}
+          # The name of the SonarQube project
+          sonarProjectName:  ${{ inputs.repo_name }}
+          # Optional command arguments to dotnet build
+          dotnetBuildArguments: ./${{ inputs.dotnetbuildarguments }}
+          # Optional. Set to 1 or true to not run 'dotnet test' command
+          # dotnetDisableTests: true
+          # The SonarQube server URL. For SonarCloud, skip this setting.
+          sonarHostname:  ${{ secrets.SONAR_HOST_URL }}
+          # Optional command arguments to dotnet test
+          dotnetTestArguments: --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+          # Optional extra command arguments the the SonarScanner 'begin' command
+          sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        continue-on-error: true
 
   # ---------------------------------------------------------------------
   # 3. Build the Docker container and publish
