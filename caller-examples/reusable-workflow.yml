@@ -10,13 +10,14 @@ jobs:
   # Run Tests, SonarQube Scans, Build and Publish Docker Image
   ci:
       uses: submittable/github-actions/.github/workflows/ci.yml@main
-      with:
-        # NOTE: you do not have to fill out the values below.
-        # The values below are defaults and some such as repo_name
-        # have functions to detect the repo name. So, if you'd like
-        # to override the defaults then uncomment the fields below
-        # and update them. 
-
+      
+      # NOTE: you do not have to fill out the values below.
+      # The values below are defaults and some such as repo_name
+      # have functions to detect the repo name. So, if you'd like
+      # to override the defaults then uncomment 'with' and the fields below
+      # and update them.
+      
+      # with:
         # ---------------------------------------------------------
         # General project properties
         # ---------------------------------------------------------
