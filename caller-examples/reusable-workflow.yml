@@ -42,6 +42,13 @@ jobs:
         # python_version: '3.6'
 
         # ---------------------------------------------------------
+        # Enable or disable running the unit tests
+        # ---------------------------------------------------------
+        # run-python-tests: false
+        # run-nodejs-tests: false
+        # run-dotnet-tests: false
+
+        # ---------------------------------------------------------
         # Unit tests folder location
         # ---------------------------------------------------------
         # file_check_path_nodejs_test: "src/__tests__/*"
@@ -52,7 +59,7 @@ jobs:
         # Enable or disable SonarQube scan
         # ---------------------------------------------------------
         # DEPRECATED: run SonarQube scan when unit tests are identified
-        # sonar-python: true
+        # sonar-python: false
         # sonar-dotnet: false
         # sonar-nodejs: false
         
