@@ -253,6 +253,7 @@ jobs:
           files: "${{ inputs.file_check_path_nodejs_test }}"
 
       - name: Check file existence for .NET Testfiles
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
         id: check_files_dotnet_test
         uses: submittable/file-existence-action@v1
         with:
