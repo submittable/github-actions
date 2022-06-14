@@ -46,6 +46,7 @@ jobs:
         # ---------------------------------------------------------
         # file_check_path_nodejs_test: "src/__tests__/*"
         # file_check_path_python_test: "tests/*"
+        # file_check_path_dotnet_test: "*.Test/*.Test.csproj"
         
         # ---------------------------------------------------------
         # Enable or disable SonarQube scan
