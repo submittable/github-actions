@@ -42,7 +42,7 @@ on:
         type: string
 
       # ---------------------------------------------------------
-      # Check to enable SonrQube scan for project
+      # Check to enable SonarQube scan for project
       # ---------------------------------------------------------
       sonar-python:
         description: Whether to Scan code using SonarQube
@@ -95,6 +95,25 @@ on:
       dotnet_version:
         description: 'Sets .NET version for .NET core application'
         default: '5.0.x'
+        required: false
+        type: string
+      
+      # ---------------------------------------------------------
+      # Check to enable running the unit tests
+      # ---------------------------------------------------------
+      run-python-tests:
+        description: Whether to run python unit tests
+        default: 'false'
+        required: false
+        type: string
+      run-nodejs-tests:
+        description: Whether to run node unit tests
+        default: 'false'
+        required: false
+        type: string
+      run-dotnet-tests:
+        description: Whether to run .NET unit tests
+        default: 'false'
         required: false
         type: string
       
@@ -234,6 +253,7 @@ jobs:
           files: "${{ inputs.file_check_path_nodejs_test }}"
 
       - name: Check file existence for .NET Testfiles
+        if: steps.check_files_dotnet.outputs.files_exists == 'true'
         id: check_files_dotnet_test
         uses: submittable/file-existence-action@v1
         with:
@@ -243,17 +263,16 @@ jobs:
       # Run tests
       # ---------------------------------------------------------
       - name: Run Python tests
-        if: steps.check_files_python_test.outputs.files_exists == 'true'
+        if: ${{ inputs.run-python-tests == 'true' && steps.check_files_python_test.outputs.files_exists == 'true' }}
         run: python -m pytest --cov-report xml:coverage.xml --cov .
       
       - name: Run Nodejs tests
-        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
+        if: ${{ inputs.run-nodejs-tests == 'true' && steps.check_files_nodejs_test.outputs.files_exists == 'true' }}
         run: npm test
       
       - name: Run .NET tests
-        if: steps.check_files_dotnet_test.outputs.files_exists == 'true'
+        if: ${{ inputs.run-dotnet-tests == 'true' && steps.check_files_dotnet_test.outputs.files_exists == 'true' }}
         run: dotnet test --logger trx
-        continue-on-error: true # TODO: Enable this to fail when unit tests fails
 
       # ---------------------------------------------------------
       # Build the project
