@@ -356,7 +356,7 @@ jobs:
             -Dsonar.projectName=${{ inputs.repo_name }}
             -Dsonar.verbose=true
             -Dsonar.sources=.
-            -Dsonar.tests=${{ inputs.file_check_path_nodejs_test }}
+            -Dsonar.tests=tests
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
