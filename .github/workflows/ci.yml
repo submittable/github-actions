@@ -335,10 +335,11 @@ jobs:
           projectBaseDir: .
           args: >
             -Dsonar.python.coverage.reportPaths=coverage-reports/coverage.xml
-            -Dsonar.verbose=true
             -Dsonar.projectKey=${{ inputs.repo_name }}
+            -Dsonar.projectName=${{ inputs.repo_name }}
+            -Dsonar.verbose=true
             -Dsonar.sources=.
-            -Dsonar.tests=tests/
+            -Dsonar.tests=${{ inputs.file_check_path_python_test }}
             -Dsonar.exclusions=tests/**
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -351,10 +352,11 @@ jobs:
         with:
           projectBaseDir: .
           args: >
-            -Dsonar.projectName=${{ inputs.repo_name }}
-            -Dsonar.projectVersion=1.0.0
-            -Dsonar.verbose=true
             -Dsonar.projectKey=${{ inputs.repo_name }}
+            -Dsonar.projectName=${{ inputs.repo_name }}
+            -Dsonar.verbose=true
+            -Dsonar.sources=.
+            -Dsonar.tests=${{ inputs.file_check_path_nodejs_test }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
