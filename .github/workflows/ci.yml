@@ -354,7 +354,7 @@ jobs:
             -Dsonar.projectKey=${{ inputs.repo_name }}
             -Dsonar.projectName=${{ inputs.repo_name }}
             -Dsonar.sources=.
-            -Dsonar.tests=tests
+          # -Dsonar.tests=tests
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
