@@ -337,7 +337,6 @@ jobs:
             -Dsonar.python.coverage.reportPaths=coverage-reports/coverage.xml
             -Dsonar.projectKey=${{ inputs.repo_name }}
             -Dsonar.projectName=${{ inputs.repo_name }}
-            -Dsonar.verbose=true
             -Dsonar.sources=.
             -Dsonar.tests=${{ inputs.file_check_path_python_test }}
             -Dsonar.exclusions=tests/**
@@ -354,7 +353,6 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ inputs.repo_name }}
             -Dsonar.projectName=${{ inputs.repo_name }}
-            -Dsonar.verbose=true
             -Dsonar.sources=.
             -Dsonar.tests=tests
         env:
