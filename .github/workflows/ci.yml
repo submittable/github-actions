@@ -174,179 +174,179 @@ jobs:
       # ---------------------------------------------------------
       # Identify project
       # ---------------------------------------------------------
-      - name: Check file existence for Python
-        id: check_files_python
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "${{ inputs.file_check_path_python }}"
+      # - name: Check file existence for Python
+      #   id: check_files_python
+      #   uses: submittable/file-existence-action@v1
+      #   with:
+      #     files: "${{ inputs.file_check_path_python }}"
 
-      - name: Check file existence for Nodejs
-        id: check_files_nodejs
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "${{ inputs.file_check_path_nodejs }}"
+      # - name: Check file existence for Nodejs
+      #   id: check_files_nodejs
+      #   uses: submittable/file-existence-action@v1
+      #   with:
+      #     files: "${{ inputs.file_check_path_nodejs }}"
       
-      - name: Check file existence for .Net
-        id: check_files_dotnet
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "${{ inputs.file_check_path_dotnet }}"
+      # - name: Check file existence for .Net
+      #   id: check_files_dotnet
+      #   uses: submittable/file-existence-action@v1
+      #   with:
+      #     files: "${{ inputs.file_check_path_dotnet }}"
       
-      # ---------------------------------------------------------
-      # Identify project version
-      # ---------------------------------------------------------
-      - name: Set Python Version
-        if: steps.check_files_python.outputs.files_exists == 'true'
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ inputs.python_version }}
+      # # ---------------------------------------------------------
+      # # Identify project version
+      # # ---------------------------------------------------------
+      # - name: Set Python Version
+      #   if: steps.check_files_python.outputs.files_exists == 'true'
+      #   uses: actions/setup-python@v2
+      #   with:
+      #     python-version: ${{ inputs.python_version }}
       
-      - name: Set Node Version
-        if: steps.check_files_nodejs.outputs.files_exists == 'true'
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ inputs.nodejs_version }}
+      # - name: Set Node Version
+      #   if: steps.check_files_nodejs.outputs.files_exists == 'true'
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: ${{ inputs.nodejs_version }}
         
-      - name: Set .Net Version
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '${{ inputs.dotnet_version }}'
+      # - name: Set .Net Version
+      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
+      #   uses: actions/setup-dotnet@v1
+      #   with:
+      #     dotnet-version: '${{ inputs.dotnet_version }}'
       
-      - name: Setup Nuget
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        uses: Nuget/setup-nuget@v1.0.5
+      # - name: Setup Nuget
+      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
+      #   uses: Nuget/setup-nuget@v1.0.5
       
-      # ---------------------------------------------------------
-      # Install project dependencies
-      # ---------------------------------------------------------
-      - name: Install Python Dependencies
-        if: steps.check_files_python.outputs.files_exists == 'true'
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8 pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      # # ---------------------------------------------------------
+      # # Install project dependencies
+      # # ---------------------------------------------------------
+      # - name: Install Python Dependencies
+      #   if: steps.check_files_python.outputs.files_exists == 'true'
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install flake8 pytest
+      #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       
-      - name: Install Nodejs Dependencies
-        if: steps.check_files_nodejs.outputs.files_exists == 'true'
-        run: npm ci
+      # - name: Install Nodejs Dependencies
+      #   if: steps.check_files_nodejs.outputs.files_exists == 'true'
+      #   run: npm ci
       
-      - name: Install .Net dependencies
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        run: dotnet restore
+      # - name: Install .Net dependencies
+      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
+      #   run: dotnet restore
 
-      # ---------------------------------------------------------
-      # Identify the location of the unit tests
-      # ---------------------------------------------------------
-      - name: Check file existence for Python Testfiles
-        if: steps.check_files_python.outputs.files_exists == 'true'
-        id: check_files_python_test
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "${{ inputs.file_check_path_python_test }}"
+      # # ---------------------------------------------------------
+      # # Identify the location of the unit tests
+      # # ---------------------------------------------------------
+      # - name: Check file existence for Python Testfiles
+      #   if: steps.check_files_python.outputs.files_exists == 'true'
+      #   id: check_files_python_test
+      #   uses: submittable/file-existence-action@v1
+      #   with:
+      #     files: "${{ inputs.file_check_path_python_test }}"
       
-      - name: Check file existence for Node Testfiles
-        if: steps.check_files_nodejs.outputs.files_exists == 'true'
-        id: check_files_nodejs_test
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "${{ inputs.file_check_path_nodejs_test }}"
+      # - name: Check file existence for Node Testfiles
+      #   if: steps.check_files_nodejs.outputs.files_exists == 'true'
+      #   id: check_files_nodejs_test
+      #   uses: submittable/file-existence-action@v1
+      #   with:
+      #     files: "${{ inputs.file_check_path_nodejs_test }}"
 
-      - name: Check file existence for .NET Testfiles
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        id: check_files_dotnet_test
-        uses: submittable/file-existence-action@v1
-        with:
-          files: "${{ inputs.file_check_path_dotnet_test }}"
+      # - name: Check file existence for .NET Testfiles
+      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
+      #   id: check_files_dotnet_test
+      #   uses: submittable/file-existence-action@v1
+      #   with:
+      #     files: "${{ inputs.file_check_path_dotnet_test }}"
       
-      # ---------------------------------------------------------
-      # Run tests
-      # ---------------------------------------------------------
-      - name: Run Python tests
-        if: ${{ inputs.run-python-tests == 'true' && steps.check_files_python_test.outputs.files_exists == 'true' }}
-        run: python -m pytest --cov-report xml:coverage.xml --cov .
+      # # ---------------------------------------------------------
+      # # Run tests
+      # # ---------------------------------------------------------
+      # - name: Run Python tests
+      #   if: ${{ inputs.run-python-tests == 'true' && steps.check_files_python_test.outputs.files_exists == 'true' }}
+      #   run: python -m pytest --cov-report xml:coverage.xml --cov .
       
-      - name: Run Nodejs tests
-        if: ${{ inputs.run-nodejs-tests == 'true' && steps.check_files_nodejs_test.outputs.files_exists == 'true' }}
-        run: npm test
+      # - name: Run Nodejs tests
+      #   if: ${{ inputs.run-nodejs-tests == 'true' && steps.check_files_nodejs_test.outputs.files_exists == 'true' }}
+      #   run: npm test
       
-      - name: Run .NET tests
-        if: ${{ inputs.run-dotnet-tests == 'true' && steps.check_files_dotnet_test.outputs.files_exists == 'true' }}
-        run: dotnet test --logger trx
+      # - name: Run .NET tests
+      #   if: ${{ inputs.run-dotnet-tests == 'true' && steps.check_files_dotnet_test.outputs.files_exists == 'true' }}
+      #   run: dotnet test --logger trx
 
-      # ---------------------------------------------------------
-      # Build the project
-      # ---------------------------------------------------------
-      - name: Build Python App
-        if: steps.check_files_python.outputs.files_exists == 'true'
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --select=E9,F63,F7,F82 --exit-zero --max-complexity=10 --max-line-length=127 --show-source --statistics
+      # # ---------------------------------------------------------
+      # # Build the project
+      # # ---------------------------------------------------------
+      # - name: Build Python App
+      #   if: steps.check_files_python.outputs.files_exists == 'true'
+      #   run: |
+      #     # stop the build if there are Python syntax errors or undefined names
+      #     # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+      #     flake8 . --count --select=E9,F63,F7,F82 --exit-zero --max-complexity=10 --max-line-length=127 --show-source --statistics
 
-      - name: Build Nodejs App
-        if: steps.check_files_nodejs.outputs.files_exists == 'true'
-        run: npm run build --if-present
+      # - name: Build Nodejs App
+      #   if: steps.check_files_nodejs.outputs.files_exists == 'true'
+      #   run: npm run build --if-present
         
-      - name: Restore nuget packages
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        run: dotnet restore
-        # run: nuget restore ./${{ inputs.file_check_path_dotnet }}
+      # - name: Restore nuget packages
+      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
+      #   run: dotnet restore
+      #   # run: nuget restore ./${{ inputs.file_check_path_dotnet }}
       
-      - name: Build .Net App
-        if: steps.check_files_dotnet.outputs.files_exists == 'true'
-        run: dotnet build
+      # - name: Build .Net App
+      #   if: steps.check_files_dotnet.outputs.files_exists == 'true'
+      #   run: dotnet build
 
-      # ---------------------------------------------------------
-      # Archive coverage report and artifacts
-      # ---------------------------------------------------------
-      - name: Archive code coverage results - Python
-        if: steps.check_files_python_test.outputs.files_exists == 'true'
-        uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report
-          path: coverage-reports/coverage.xml
-          retention-days: 5
+      # # ---------------------------------------------------------
+      # # Archive coverage report and artifacts
+      # # ---------------------------------------------------------
+      # - name: Archive code coverage results - Python
+      #   if: steps.check_files_python_test.outputs.files_exists == 'true'
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: code-coverage-report
+      #     path: coverage-reports/coverage.xml
+      #     retention-days: 5
       
-      - name: Archive code coverage results - Nodejs
-        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
-        uses: actions/upload-artifact@v2
-        with:
-          name: code-coverage-report
-          path: output/test/code-coverage.html
-          retention-days: 5
+      # - name: Archive code coverage results - Nodejs
+      #   if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: code-coverage-report
+      #     path: output/test/code-coverage.html
+      #     retention-days: 5
 
-      - name: Archive production artifacts
-        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist-without-markdown
-          path: |
-            dist
-            !dist/**/*.md
+      # - name: Archive production artifacts
+      #   if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: dist-without-markdown
+      #     path: |
+      #       dist
+      #       !dist/**/*.md
       
-      # ---------------------------------------------------------
-      # Run SonarQube scan
-      # ---------------------------------------------------------
-      - name: Run SonarQube Scan - Python
-        if: steps.check_files_python_test.outputs.files_exists == 'true'
-        uses: sonarsource/sonarqube-scan-action@master
-        with:
-          projectBaseDir: .
-          args: >
-            -Dsonar.python.coverage.reportPaths=coverage-reports/coverage.xml
-            -Dsonar.projectKey=${{ inputs.repo_name }}
-            -Dsonar.projectName=${{ inputs.repo_name }}
-            -Dsonar.sources=.
-            -Dsonar.tests=${{ inputs.file_check_path_python_test }}
-            -Dsonar.exclusions=tests/**
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        continue-on-error: true
+      # # ---------------------------------------------------------
+      # # Run SonarQube scan
+      # # ---------------------------------------------------------
+      # - name: Run SonarQube Scan - Python
+      #   if: steps.check_files_python_test.outputs.files_exists == 'true'
+      #   uses: sonarsource/sonarqube-scan-action@master
+      #   with:
+      #     projectBaseDir: .
+      #     args: >
+      #       -Dsonar.python.coverage.reportPaths=coverage-reports/coverage.xml
+      #       -Dsonar.projectKey=${{ inputs.repo_name }}
+      #       -Dsonar.projectName=${{ inputs.repo_name }}
+      #       -Dsonar.sources=.
+      #       -Dsonar.tests=${{ inputs.file_check_path_python_test }}
+      #       -Dsonar.exclusions=tests/**
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #   continue-on-error: true
       
       - name: Run SonarQube Scan - Nodejs
-        if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
+        # if: steps.check_files_nodejs_test.outputs.files_exists == 'true'
         uses: sonarsource/sonarqube-scan-action@master
         with:
           projectBaseDir: .
